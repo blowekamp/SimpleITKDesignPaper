@@ -1058,57 +1058,93 @@ applications which dramatically reduce the implementation time and
 increase the number of algorithms that can be made available.
 
 \section{Discussion}
+The SimpleITK interface and wrapping for additional languages is a new
+and easy way to use ITK’s algorithms in a readily usable
+environment. A number of features of ITK are hidden and the bulk of
+the interface and usage has been simplified. Currently about 250
+algorithms are available through SimpleITK to be interactively
+explored in a number of scripting environments We have develop an
+effective tool to be used in interactive scripting and prototyping
+environments.
 
-Text Text Text Text Text Text  Text Text Text Text Text Text Text Text Text  Text Text Text Text Text Text Text Text Text Text.
-Additional Requirements:
-\subsection{Corrections}
+SimpleITK has already had several releases during on going
+development. The most current release available is 0.7.0rc1. As of
+this writing there have been over 7,000 binary downloads of SimpleITK
+on SourceForge. This does not include those who have built SimpleITK
+from the source code repository, or are using it from an integrated
+application. The SimpleITK official website (http://www.simpleitk.org)
+contains more information about how to get started using SimpleITK.
 
-Minor corrections to published articles can be communicated to the Frontiers Production Office at production.office@frontiersin.org. If you need to communicate important changes to an article please submit a General Commentary. Submit the article with the title “Erratum: Original Title of Article”.
+\subsection{Future Work}
+While the foundations of ITK have been integrated into the SimpleITK
+interface such as images, transforms and interpolators as well as the
+infrastructure for source code generation for filter has been
+implemented, much of the work for ITK’s registration framework is yet
+to be done. Some ITK registration methods are ITK filters can easily
+be integrated as part of the current framework. The modular
+registration framework in ITK version 3 and the lastest version 4
+present new problems which require unique design decisions.
 
-\subsection{Commentaries on Articles}
+Additionally, there are features in ITK that still need to be added to
+the SimpleITK interface such and progress reporting and call-back
+methods. SimpleITK currently contains over 250 image filters from
+ITK. We are always looking to hear back from SimpleITK users about
+what additional ITK filters are need to prioritize the remaining
+work. Many of the remaining fitler are not commonly used. So when the
+SimpleITK interface is tested, bugs in ITK may be encountered or other
+inconsistency discovered in ITK’s interface. These issues must be
+addressed and fix in ITK, and slow down the development of SimpleITK.
 
-At the beginning of your manuscript provide the citation of the article commented on.
+ITK is a very large toolkits consisting of millions of lines of
+code. The SimpleITK interface is highly customized and not designed to
+expose all of ITK. The development and design of SimpleITK has been
+for a robust, reliable, and elegant interface to ITK. To that end we
+have focused on the template-less layer to the image class and image
+filters.  There are many additional data structures that could be
+include in the interface including histograms, and quad-edge
+meshes. However, we wish the presented interface to be the best
+possible to that end some of these areas of ITK may not be include to
+maintain a high standard until there is broad ITK community support.
 
-\subsection{Focused Reviews}
+The number of the languages which SimpleITK is wrapped for is large
+and includes Python, Java, C\#, Ruby, Lua, Tcl and R. Developing and
+maintaining unique features and “syntactic sugar” such as advanced
+subscripting and native buffer interface for all languages is too
+large of a task. We seek the on going support of the ITK community to
+support these features and languages. Specifically, in the near future
+we hope to add native JAVA array integrations with SimpleITK image
+buffers, and improve SWIG’s wrapping for the R language to handle
+enumeration types correctly.
 
-For Tier 2 invited Focused Reviews the sections Introduction, Material and Methods, Results, and Discussion are recommended. In addition the authors must submit a short biography of the corresponding author(s). This short biography has a maximum of 600 characters, including spaces.
-
-A picture (5 x 5 cm, in *.tif or *.jpg, min 300 dpi) must be submitted along with the biography in the manuscript and separately during figure upload.
-Focused Reviews highlight and explain key concepts of your work. Please highlight a minimum of four and a maximum of ten key concepts in bold in your manuscript and provide the definitions/explanations at the end of your manuscript under “Key Concepts”. Each definition has a maximum of 400 characters, including spaces.
-
-\subsection{Human Search and Animal Research}
-
-All experiments on live vertebrates or higher invertebrates must be performed in accordance with relevant institutional and national guidelines and regulations. In the manuscript, authors must identify the committee approving the experiments and must confirm that all experiments conform to the relevant regulatory standards. For manuscripts reporting experiments on human subjects, authors must identify the committee approving the experiments and must also include a statement confirming that informed consent was obtained from all subjects. In Original Research Articles and Clinical Trial Articles these statements should appear in the Materials and Methods section.
-
-\subsection{Clinical Trial Registration}
-
-Clinical trials should be registered in a public trials registry in order to become the object of a publication at Frontiers. Trials must be registered at or before the start of patient enrollment. A clinical trial is defined as"any research study that prospectively assigns human participants or groups of humans to one or more health-related interventions to evaluate the effects on health outcomes."(\url{www.who.int/ictrp/en}). A list of acceptable registries can be found at \url{www.who.int/ictrp/en and www.icmje.org}.
-
-\subsection{Inclusion of Proteomics Data}
-
-Authors should provide relevant information relating to how the peptide/protein matches were undertaken, including methods used to process and analyze data, false discovery rates (FDR) for large-scale studies and threshold or cut-off rates for peptide and protein matches. Further information could include software used, mass spectrometer type, sequence database and version, number of sequences in database, processing methods, mass tolerances used for matching, variable/fixed modifications, allowable missed cleavages, etc.
-
-Authors should provide as supplementary material information used to identify proteins and/or peptides. This should include information such as accession numbers, observed mass (m/z), charge, delta mass, matched mass, peptide/protein scores, peptide modification, miscleavages, peptide sequence, match rank, matched species (for cross species matching), number of peptide matches, ambiguous protein/peptide matches should be indicated, etc.
-For quantitative proteomics analyses authors should provide information to justify the statistical significance including biological replicates, statistical methods, estimates of uncertainty and the methods used for calculating error.
-
-For peptide matches with biologically relevant post-translational modifications (PTM) and for any protein match that has occurred using a single mass spectrum, authors should include this information as raw data, annotated spectra or submit data to an online repository (recommended option).
-Authors are encouraged to submit raw or matched data and 2-DE images to public proteomics repositories. Submission codes and/or links to data should be provided within the manuscript.
-
-\subsection{Data Sharing}
-
-Frontiers supports the policy of data sharing, and authors are advised to make freely available any materials and information described in their article, and any data relevant to the article (while not compromising confidentiality in the context of human-subject research) that may be reasonably requested by others for the purpose of academic and non-commercial research. In regards to deposition of data and data sharing through databases, Frontiers urges authors to comply with the current best practices within their discipline.
+\subsection{Conclusion}
+SimpleITK is a new user-friendly software interface to the image
+processing algorithms available in ITK. Through the use of innovative
+software engineer combined with disciplined testing practices,
+SimpleITK makes a large portfolio of reliable open source imaging
+algorithms available to a broad range of scientific communities. The
+end goal of this work is not the SimpleITK software itself. Rather the
+goal is to aid research over a wide range of scientific fields by
+improving accessibility and reproducibility to state of the art algorithms. 
 
 \section*{Disclosure/Conflict-of-Interest Statement}
 %All relationships financial, commercial or otherwise that might be perceived by the academic community as representing a potential conflict of interest must be described. If no such relationship exists, authors will be asked to declare that the research was conducted in the absence of any commercial or financial relationships that could be construed as a potential conflict of interest.
 The authors declare that the research was conducted in the absence of any commercial or financial relationships that could be construed as a potential conflict of interest.
 
 \section*{Acknowledgement}
-Text Text Text Text Text Text  Text Text Text Text Text Text Text Text  Text Text Text Text Text Text Text Text Text  Text Text Text.
 
-\paragraph{Funding\textcolon} Text Text Text Text Text Text  Text Text.
+We would like to thank the ITK Community including all the users,
+developers and contributors. We would also like to acknowledge the
+work of Kedar Narayan, PhD, National Cancer Institute,  in collecting
+the IA-SEM data set. 
+ 
+\paragraph{Funding\textcolon}
+
+This work has been supported by the American
+Reinvestment and Recovery Act along with the National Library of
+Medicine's intramural research program.
 
 \section*{Supplemental Data}
-Text Text Text Text Text Text  Text Text Text Text Text Text Text Text Text  Text Text Text Text Text Text Text Text Text  Text Text Text.
+
 
 %\bibliographystyle{frontiersinSCNS&ENG} % for Science and Engineering articles
 \bibliographystyle{frontiersinMED} % for Medicine articles
