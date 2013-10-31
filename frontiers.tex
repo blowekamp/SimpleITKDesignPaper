@@ -876,7 +876,7 @@ and listing \ref{lst:03}: lines 13-14). Then from the original T1 and T2 volumes
 create a vector volume using SimpleITK's Compose function (See listing \ref{lst:03}: line 18).
 
 For initializing the segmentation of the cerebral ventricles  we start with
-2 seed points, one each side (See listing \ref{lst:03}: line 21). 
+2 seed points, one each side (See listing \ref{lst:03}: line 21).
 For visualization purposes, we create
 a seed volume, based on the dimensions of the T1 volume.  Setting the
 seed voxels to 1 is simple with SimpleITK's array indexing (See listing
@@ -918,14 +918,15 @@ megabyte volume.
 
 The goal of this segmentation is to identify each distinct gold bead
 by creating a unique label for each gold bead. The segmentation occurs
-primarily in two steps: first identifying the individual beads and
-second growing the seeds. This sequence of
+primarily in two steps: first identifying the individual beads (See
+listing \ref{lst:04}: lines 9-16) and second growing the seeds (See
+listing \ref{lst:04}: lines 26-27). This sequence of
 processing was developed in an interactive python session making use
-of SimpleITK's Show method to visualize intermediate results. It was
+of SimpleITK's \textif{Show} method to visualize intermediate results. It was
 then converted into a single script to assist with batch processing
-and parameter exploration (See listing \ref{lst:05}).
+and parameter exploration.
 
-\lstinputlisting[language=Python, label=lst:05, caption={Example
+\lstinputlisting[language=Python, label=lst:04, caption={Example
     Python script using SimpleITK to segment gold beads with the
     watersheds algorithm.}]{GoldBeadsSegmentation.py}
 
