@@ -164,6 +164,51 @@ Guide \cite{Ibanez2003}.
 Notably missing from the design goals of ITK are usability and accessibility.
 
 
+\subsection{WrapITK}
+
+The native wrapping of ITK is performed with a project called WrapITK
+\cite{Lehmann2006}, which was integrated with version 4 into the main
+repository. Its goal was to be a direct mapping of ITK’s interface for
+languages such as Python, Java and Tcl. As a direct mapping it
+attempts to expose all of ITK’s functionality include the pipeline,
+template parameters of data objects and filters along with ITK’s usage
+of pointers to objects. WrapITK provides interfaces to many basic ITK
+objects such the basic array, index vector, point and matrix
+classes. Additionally interfaces to the core data object types such as
+images and transforms are provided along with iterators and other
+utility classes. Most of these type have template parameters for both
+dimension and value type. These available types in WrapITK make it
+possible to use most of ITK’s filters and many of ITK’s modular
+frameworks, such as registration, with the native ITK class to specify
+parameters.
+
+WrapITK’s implementation was a evolution of the initial ITK wrapping
+system which used CABLE \cite{Lehmann2006}. There are four components to
+this system CMake \cite{Martin2003}, GCC\_XML \cite{gccxml}, pygccxml, and SWIG
+\cite{Beazley2003}. The process is driven by CMake which runs GCC\_XML to
+produce an easily parsable description of the ITK source code, then
+uses manually written CMake “wrap” files along with Python’s pygccxml
+module to create a SWIG interface file and describe how the ITK
+templates parameters should be declared. Next SWIG generates the C++
+code which instantiates and wraps the ITK for the targeted language.
+
+The result is a powerful exposure of ITK interface, along with many of
+ITK’s difficulties and problems. Each templated ITK class is
+instantiated, compiled and wrapped as separate objects. So in the
+target language the correct template parameters must be provided as
+part of the of the object to be constructed. While this approach is
+very much in the style of ITK, many of the targeted languages are
+scripted and typeless, making this extra verbosity unnatural and
+cumbersome.  This method also has a very large impact on the size of
+the WrapITK library and the number of symbols in the library. For
+every ITK class, with every combination of template parameter, for
+each method a wrapper method is needed, which introduces multiple
+symbols in the library that must get loaded into the target language
+namespace. With most of the pixel types instantiated the WrapITK
+library can be over a gigabyte, can contain nearly 3 million symbols,
+and can take over a minute to load into Python. Also due to the size,
+the large number of configuration options, and the compile time and
+configuration options, precompiled binaries are not available.
 
 
 
