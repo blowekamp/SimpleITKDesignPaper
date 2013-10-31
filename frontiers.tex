@@ -42,7 +42,7 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 \def\Authors{Bradley Lowekamp\,$^{1,*}$, David T. Chen\,$^{1}$, Luis Ibanez\,$^2$ and Danial Blezek\,$^3$}
 % Affiliations should be keyed to the author's name with superscript numbers and be listed as follows: Laboratory, Institute, Department, Organization, City, State abbreviation (USA, Canada, Australia), and Country (without detailed address information such as city zip codes or street names).
 % If one of the authors has a change of address, list the new address below the correspondence details using a superscript symbol and use the same symbol to indicate the author in the author list.
-\def\Address{$^{1}$Office of High Performance and Communication, National Library of Medicine, Bethesda, MD, USA \\
+\def\Address{$^{1}$Office of High Performance and Communication, National Library of Medicine, National Institutes of Health, Bethesda, MD, USA \\
 $^{2}$Kitware, Clifton Park, NY, USA \\
 $^{3}$Mayo Graduate School of Medicine, Biomedical Engineering Department, Rochester, MN, USA}
 % The Corresponding Author should be marked with an asterisk
@@ -90,11 +90,13 @@ class structure that only exposes the required functionality, hiding
 ITK's extensive template use. Internally SimpleITK utilizes a manual
 description of each filter with code-generation and advanced C++
 meta-programming to provide the higher-level interface, bringing the
-capabilities of ITK to a larger audience.
+capabilities of ITK to a larger audience. SimpleITK is licensed as
+open source software under the Apache License Version 2.0 and more information
+about downloading it can be found at http://www.simpleitk.org.
 
 \tiny
 %All article types: you may provide up to 8 keywords; at least 5 are mandatory.
- \keyFont{ \section{Keywords:}  Software Design, Insight Toolkit segmentation, Image Processing, Computer-Assisted, interactive }
+ \keyFont{ \section{Keywords:}  Software Design, Insight Toolkit, segmentation, Image Processing, Computer-Assisted, interactive }
 \end{abstract}
 
 \section{Introduction}
@@ -182,7 +184,8 @@ ITK Software Guide \cite{Ibanez2005}.
     typical ITK example with templates, which reads an image, runs a
     Gaussian convolution then writes it back out to disk.}]{itkGaussianExample.cxx}
 
-Notably missing from the design goals of ITK are usability and accessibility.
+Notably missing from the design goals of ITK are usability and ease of
+accessibility.
 
 
 \subsection{WrapITK}
@@ -205,10 +208,10 @@ parameters.
 
 WrapITK's implementation was a evolution of the initial ITK wrapping
 system which used CABLE \cite{Lehmann2006}. There are four components to
-this system CMake \cite{Martin2003}, GCC\_XML \cite{gccxml}, pygccxml, and SWIG
+this system CMake \cite{Martin2003}, GCC\_XML (http://www.gccxml.org), pygccxml, and SWIG
 \cite{Beazley2003}. The process is driven by CMake which runs GCC\_XML to
 produce an easily parsable description of the ITK source code, then
-uses manually written CMake “wrap” files along with Python's pygccxml
+uses manually written CMake ``wrap'' files along with Python's pygccxml
 module to create a SWIG interface file and describe how the ITK
 templates parameters should be declared. Next SWIG generates the C++
 code which instantiates and wraps the ITK for the targeted language.
@@ -744,22 +747,23 @@ Notation (JSON) file. The JSON file structure is a lightweight data
 format popularized by JavaScript programming for the web, which is
 easy for both humans and computer software to read and write. The JSON
 description contains the essence of an ITK filter. A filter
-description contains the expected named fields [WHAT FIELDS?] with
+description contains expected named fields, such as \textit{name},
+\textit{template\_type}, \textit{number\_of\_inputs},
+\textit{pixel\_types}, and \textit{output\_pixel\_type}, with
 values, as well as more generic fields which can contain C++ code to
-be inserted into the template. The information needed to specify the
-template parameters of a filter based on the input(s) consists of the
-number of inputs, the type of pixels supported as well as how it
-[WHAT?] gets mapped to the output type. Additionally, there is the
-“member” sections which contains the description for each filter
+be inserted into the template. The \textit{output\_pixel\_type} is
+frequently more that just a static value by containing meta-programing
+to transform the input type to the output. Additionally, there is the
+\textit{member} sections which contains the description for each filter
 parameter so that it can be store in the SimpleITK facade and
 translated into the typed ITK filter. There is also an optional
-section to describe “measurements”, and how to update the member
+section to describe \textit{measurements}, and how to update the member
 variable from the results of the ITK filter.
 
 For normal image filters previously mentioned portion of the JSON
 description can generally be written in just a few moments from a
 similar example. The time consuming part in writing a JSON description
-is the “tests” section. This section contains input image file names,
+is the \textit{tests} section. This section contains input image file names,
 the values of parameters, and either a hash of the expected output or
 a baseline image to compare a test against. By including this section
 we are able to generate tests for each language to verify usability
@@ -773,14 +777,14 @@ powerful, portable, fast, and lightweight scripting languages
 \cite{Ierusalimschy2006}. We chose it as the language for the source code
 generator script because its small size makes it easily included as
 part of the SimpleITK source and compiled during the build
-process. The generator script is derived with the Lua “Text Template
-Expand” example [REF], combined with an publically available JSON
-parser[REF]. This system uses template files which contain and inlined
-Lua expressions all of which are evaluated into strings. The scope of
-the Lua expressions include variables from the current scope in the
-JSON description file. There are template files for filters of types
-such as “ImageSources”, “BinaryFunctorFilters”, and
-“DualImageFilters”.
+process. The generator script is derived with the Lua ``Text Template
+Expand'' example (http://lua-users.org/wiki/TextTemplate), combined
+with an publically available JSON  parser. This system uses template
+files which contain and inlined Lua expressions all of which are
+evaluated into strings. The scope of the Lua expressions include
+variables from the current scope in the JSON description file. There
+are template files for filters of types such as \textit{ImageSources},
+\textit{BinaryFunctorFilters}, and \textit{DualImageFilters}.
 
 \subsubsection{Template Meta-program and Typelists}
 The crux of the problem for the template-less layer is the ability to
@@ -788,7 +792,7 @@ map the runtime pixel type information, PixelIDValue, available from
 SimpleITK's image to the compile-time template parameters in ITK and
 visa versa. Template meta-programming in C++ is the use of templates
 to perform compile-time execution to generate code. SimpleITK uses a
-concept called “Typelists” list to operate on list of types, PixelIDs,
+concept called ``Typelists'' list to operate on list of types, PixelIDs,
 which represent the types of pixels. Specifically these lists have
 compile-time operations to append, merge, intersect, search, traverse
 and perform permutations of selections from two lists
@@ -829,7 +833,7 @@ interface of SimpleITK would be unusable. Duplicating the effort to
 describe each algorithm and parameters with what has already been done
 in ITK would be a foolish task. Doxygen is the de facto standard tool
 for generating reference manuals of a programming interface from
-annotated source code (htttp://www.doxygen.org). It is used as the source code annotation
+annotated source code (http://www.doxygen.org). It is used as the source code annotation
 throughout ITK and SimpleITK. For all the manually written SimpleITK
 infrastructure and facade interfaces the annotations are written in
 the source code. Automated utilities have been developed to insert
@@ -885,7 +889,7 @@ than on the T1 volume (See figure \ref{fig:02}, line 43-47, and figure \ref{fig:
 Finally using a volume renderer we can visualize the lateral ventricle
 segmentation in 3d.  (See figure \ref{fig:05}).
 
-\lstinputlisting[language=Python, label=lst:04, caption={A Python script using SimpleITK for the
+\lstinputlisting[language=Python, label=lst:03, caption={A Python script using SimpleITK for the
     multi-modal segmentation of the lateral ventricles.}]{VentricleSegment.py}
 
 
@@ -1058,7 +1062,7 @@ maintain a high standard until there is broad ITK community support.
 
 The number of the languages which SimpleITK is wrapped for is large
 and includes Python, Java, C\#, Ruby, Lua, Tcl and R. Developing and
-maintaining unique features and “syntactic sugar” such as advanced
+maintaining unique features and ``syntactic sugar'' such as advanced
 subscripting and native buffer interface for all languages is too
 large of a task. We seek the on going support of the ITK community to
 support these features and languages. Specifically, in the near future
