@@ -231,7 +231,7 @@ symbols in the library that must get loaded into the target language
 namespace. With most of the pixel types instantiated the WrapITK
 library can be over a gigabyte, can contain nearly 3 million symbols,
 and can take over a minute to load into Python. Also due to the size,
-the large number of configuration options, and the compile time and
+the large number of configuration options, and the compile-time and
 configuration options, precompiled binaries are not available.
 
 \subsection{Other Wrapping}
@@ -456,7 +456,7 @@ languages. For example SWIG can provide an interface to a std::vector
 in Python similar to its own list or tuple type along with implicit
 conversions. This feature greatly improves the interaction in the
 target language, giving the interface a native feel. Because of the
-goal to create a template-less layer free from compile time
+goal to create a template-less layer free from compile-time
 parameters, SimpleITK uses std::vectors for array-like parameters for
 its interface. However, for the targeted scripting language it may
 appear as native arrays.
@@ -617,7 +617,7 @@ conventional interface for different target languages.
 \subsection{The Design of the SimpleITK Filters}
 Among the objectives which drove the filter interface design of
 SimpleITK included removing the dependency on the image type at
-compile time, the removal of ITK's data driven pipeline as well as
+compile-time, the removal of ITK's data driven pipeline as well as
 providing a flexible interface which has an object oriented and
 procedural interface. With the template-less image class designed and
 the decision to use STL's std::vector as parameters whose length is
@@ -958,11 +958,11 @@ SimpleITK.
 The SimpleITK infrastructure can also be used as a way to integrate
 ITK into applications. Many image processing applications are designed
 in a modular fashions so that modules or extensions can be created to
-add new functions. A frequent objective is to integrate ITK's
+add new functionality. A frequent objective is to integrate ITK's
 important algorithms into an end user application with a graphical
-user interface. When trying to directly integrate ITK with
+user interface (GUI). When trying to directly integrate ITK with
 applications, there are common problems encountered that SimpleITK can
-resolve.  Interfacing an application's data types with
+resolve. Interfacing an application's data types with
 the templated ITK types requires dealing with template parameter
 instantiation and run-time dispatching. Also, for each filter or algorithm
 important parameters and default values need to be
@@ -976,19 +976,19 @@ analysis in medical image computing and clinical research
 for numerous biomedical imaging formats and functionality such as
 automatic interactive segmentation, registration, and
 visualization. It is built upon a variety of open source software
-including ITK to provide core functionality such as visualization, GUI
-support, and Python for script. It has a modular
-architecture to support custom plug-ins. Despite 3D Slicer using ITK
-in its C++ backend, the burden of creating a module for most of ITK
+to provide core functionality such as visualization, GUI
+support, and script. It has a modular
+architecture to support custom plug-ins. Despite 3D Slicer including ITK
+in its C++ backend, the burden of creating a module for a large number of ITK
 filters was too great, so many of ITK's basic image processing algorithms
-were not available to end user modules.
+were not available to end users.
 
 The SimpleFilters module in 3D Slicer was created to provide a basic
 GUI to the image filters available in ITK through SimpleITK. During
 the course of a single week at a National Alliance of Medical Image
 and Computing (NAMIC) project week, with the support of various member
 of the developer community, we created an initial implementation of the module
-encorporating over 200 SimpleITK image filters with user interfaces
+encorporating over 200 SimpleITK image filters with GUIs
 for their parameters.
 
 The module was written in Python to take advantage of the ability
@@ -996,21 +996,22 @@ to generate a string and evaluate that string at runtime.
 By using this run-time capability with a few hundred lines of
 code, we were able to implement code to generate a GUI for the
 parameters and to execute each filter. This module was created without any
-filter specific code or compile time code generation, but by
+filter specific code or compile-time code generation, but by
 reading SimpleITK's JSON descriptions files to obtain the
 parameters. The calls to configure filters for execution were
 constructed at runtime from strings. Also the documentation
-string in the JSON are used for mouse quick tips and hover overs. The
-module uses SimpleITK and its typeless layer for runtime type
+strings in the JSON are used for mouse quick tips and hover overs. The
+module uses SimpleITK and its template-less layer for runtime type
 dispatching, so all image types are supported without additional case
-or switch statements.
+or switch statements. The SimpleFilters module has been incorporated
+into 3D Slicer and is part of the binary distribution with version 4.3.
 
 The JSON filter descriptions in SimpleITK contain the essence of
 ITK. They provide a standard to describe the parameters for
 algorithms, along with their default values and documentation. In
 addition to the interface and language bindings that SimpleITK provides,
 these descriptions are another valuable asset when integrating ITK into
-applications.  They can dramatically reduce the implementation time and
+applications. They can dramatically reduce the implementation time and
 increase the number of algorithms that can be made available.
 
 \section{Discussion}
