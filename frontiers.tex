@@ -847,7 +847,7 @@ integration with SimpleITK and other external projects.
 \section{Examples}
 
 \subsection{Multi-modal Vectricle Segmentation}
-Segmentation of the human brain ventricle is a common task in the
+Segmentation of the human brain lateral ventricle is a common task in the
 study of brain anatomy and its diseases.  Changes in the volume of
 cerebrospinal fluid and the shape of the brain ventricles are
 associated with a number of diseases including hydrocephalus
@@ -861,39 +861,32 @@ grows a region based on the similarity of the local vector image
 statistics.  To create a vector image we combine the MRI T1 and T2
 images into a single vector image.
 
-Our MRI segmentation Python script begins with import SimpleITK and
+Our MRI segmentation Python script begins with importing SimpleITK and
 our image display routines showimg and showimg3d (available for
-download):
-
-
-Next we read the T1 and T2 brain images and create unsigned char
-version for display (See figure \ref{fig:02}).
+download).  Next we read the T1 and T2 brain images and create unsigned char
+version for displays (See figure \ref{fig:02}, lines 5-10).
 
 Taking advantage of SimpleITK's Python array slicing, extracting
-coronal slices from the MRI volumes is simple:
-
-From the T1 and T2 volumes we can create a vector volume using
-SimpleITK's Compose function.
+coronal slices from the MRI volumes is simple (See figure \ref{fig:02}, lines 13-14).  
+Then from the T1 and T2 volumes we can create a vector volume using
+SimpleITK's Compose function (See figure \ref{fig:02}, line 18).
 
 
 For initializing the segmentation of the brain ventricle we start with
-2 seed points, one in each half. For visualization purpose, we create
+2 seed points, one in each half (See figure \ref{fig:02}, line 21). 
+For visualization purposes, we create
 a seed volume, based on the dimensions of the T1 volume.  Setting the
 seed voxels to 1 is simple with SimpleITK's array indexing  (See
-figure \ref{fig:03}).
+figure \ref{fig:02}, line 26-27, and figure \ref{fig:03}).
 
 To display our segmentation we can create a contour of it and overlay
-than on the T1 volume:
+than on the T1 volume (See figure \ref{fig:02}, line 43-47, and figure \ref{fig:04}).
 
-See figure \ref{fig:04}.
+Finally using a volume renderer we can visualize the lateral ventricle
+segmentation in 3d.  (See figure \ref{fig:05}).
 
-And using a volume renderer we can visualize the ventricle
-segmentation in 3d.
-
-See figure \ref{fig:05}.
-
-\lstinputlisting[language=Python, label=lst:04, caption={A Python script using SimpleITK to the
-    multi-modal segemntation of the lateral ventricles.}]{VentricleSegment.py}
+\lstinputlisting[language=Python, label=lst:04, caption={A Python script using SimpleITK for the
+    multi-modal segmentation of the lateral ventricles.}]{VentricleSegment.py}
 
 
 \subsection{Microscopy Segmentation}
