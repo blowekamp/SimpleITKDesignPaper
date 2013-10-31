@@ -78,7 +78,7 @@ languages. ITK is a templated C++ library of image processing
 algorithms and frameworks for biomedical and other applications, and
 it was designed to be generic, flexible and extensible. Initially, ITK
 provided a direct wrapping interface to languages such as Python and
-Tcl through the WrapITK system. Unlike WrapITK, which exposed ITK’s
+Tcl through the WrapITK system. Unlike WrapITK, which exposed ITK's
 complex templated interface, SimpleITK was designed to provide an easy
 to use and simplified interface to ITK's algorithms. It includes
 procedural methods, hides ITK's demand driven pipeline, and provides a
@@ -87,7 +87,7 @@ such as binary distribution packages and overloaded operators. Our
 user-friendly design goals dictated a departure from the direct
 interface wrapping approach WrapITK has taken, towards a new facade
 class structure that only exposes the required functionality, hiding
-ITK’s extensive template use. Internally SimpleITK utilizes a manual
+ITK's extensive template use. Internally SimpleITK utilizes a manual
 description of each filter with code-generation and advanced C++
 meta-programming to provide the higher-level interface, bringing the
 capabilities of ITK to a larger audience.
@@ -111,7 +111,7 @@ list of experimental parameters, and software.
 Open source software provides public implementations of state of the
 art algorithms, that facilitate the accelerated advancement of a
 field, through a more efficient research lifecycle, and through more
-practical education. The National Library of Medicine’s Insight
+practical education. The National Library of Medicine's Insight
 Segmentation and Registration Toolkit (ITK) is a leading open source
 software for biomedical image analysis. Since 1999, it has been used
 in fields as varied as brain registration for neuroscience, microscopy
@@ -125,8 +125,8 @@ of ITK.  Whereas direct use of the ITK programming interface requires
 expertise in templated C++, SimpleITK was designed to be accessible
 from a variety of languages.  Furthermore SimpleITK has a
 straightforward interface that does not require knowledge of the
-intricacies of ITK’s templated types. By lowering the bar to access
-ITK’s portfolio of image processing algorithms we hope to further the
+intricacies of ITK's templated types. By lowering the bar to access
+ITK's portfolio of image processing algorithms we hope to further the
 goals of open source and open science.
 
 \subsection{The Insight Segmentation and Registration Toolkit}
@@ -189,32 +189,32 @@ Notably missing from the design goals of ITK are usability and accessibility.
 
 The native wrapping of ITK is performed with a project called WrapITK
 \cite{Lehmann2006}, which was integrated with version 4 into the main
-repository. Its goal was to be a direct mapping of ITK’s interface for
+repository. Its goal was to be a direct mapping of ITK's interface for
 languages such as Python, Java and Tcl. As a direct mapping it
-attempts to expose all of ITK’s functionality include the pipeline,
-template parameters of data objects and filters along with ITK’s usage
+attempts to expose all of ITK's functionality include the pipeline,
+template parameters of data objects and filters along with ITK's usage
 of pointers to objects. WrapITK provides interfaces to many basic ITK
 objects such the basic array, index vector, point and matrix
 classes. Additionally interfaces to the core data object types such as
 images and transforms are provided along with iterators and other
 utility classes. Most of these type have template parameters for both
 dimension and value type. These available types in WrapITK make it
-possible to use most of ITK’s filters and many of ITK’s modular
+possible to use most of ITK's filters and many of ITK's modular
 frameworks, such as registration, with the native ITK class to specify
 parameters.
 
-WrapITK’s implementation was a evolution of the initial ITK wrapping
+WrapITK's implementation was a evolution of the initial ITK wrapping
 system which used CABLE \cite{Lehmann2006}. There are four components to
 this system CMake \cite{Martin2003}, GCC\_XML \cite{gccxml}, pygccxml, and SWIG
 \cite{Beazley2003}. The process is driven by CMake which runs GCC\_XML to
 produce an easily parsable description of the ITK source code, then
-uses manually written CMake “wrap” files along with Python’s pygccxml
+uses manually written CMake “wrap” files along with Python's pygccxml
 module to create a SWIG interface file and describe how the ITK
 templates parameters should be declared. Next SWIG generates the C++
 code which instantiates and wraps the ITK for the targeted language.
 
 The result is a powerful exposure of ITK interface, along with many of
-ITK’s difficulties and problems. Each templated ITK class is
+ITK's difficulties and problems. Each templated ITK class is
 instantiated, compiled and wrapped as separate objects. So in the
 target language the correct template parameters must be provided as
 part of the of the object to be constructed. While this approach is
@@ -245,7 +245,7 @@ Studio on the Windows operating system, and properties and methods for
 a new ITK object need to be manually added and updated.  Also there is
 no testing generated for the wrapped interface.
 
-MathWorks’ MATLAB is a popular commercial platform for research and
+MathWorks' MATLAB is a popular commercial platform for research and
 prototyping bio-medical image processing and other numeric computation
 algorithms. There are several libraries available to access ITK
 algorithms inside MATLAB, although they are not providing a direct
@@ -269,7 +269,7 @@ interface accessible to non-computer scientists such as domain
 scientists, biomedical engineers and mathematicians.
 
 Interactive scripting and programming environments such as the
-Python’s SciPy environment \cite{Jones2001}, MATLAB (Mathworks, Natick, MA)
+Python's SciPy environment \cite{Jones2001}, MATLAB (Mathworks, Natick, MA)
 and The R Project for Statistical Computing are popular choices for
 initial prototyping and experimentations. Scripting languages are
 easily accessible to more people than C++.
@@ -282,8 +282,8 @@ requirement is a large initial hurdle, and problems are frequently
 encountered as shown by the many help requests on the ITK support
 mailing list.
 
-A second common difficulty is dealing with the ITK’s advanced C++
-templates. ITK uses templates for both an image type’s pixel type and
+A second common difficulty is dealing with the ITK's advanced C++
+templates. ITK uses templates for both an image type's pixel type and
 the dimension, and the algorithms are templated over the image
 types. The naive usage of these features require the developer to
 determine static types used at compile type.  The code required to
@@ -315,7 +315,7 @@ The survey produced several important conclusions. First, a ready to
 use package greatly increases the likelihood of it being used. Second,
 1 dimensional images are not important with only 4 participants saying
 it would likely to be used. Third, for each pixel type the group was
-asked to rate it’s priority from ``Not important'' to ``Essential''. Every
+asked to rate it's priority from ``Not important'' to ``Essential''. Every
 pixel type had a minimum of 25\% of the participants saying it was at least
 a ``High Priority''.
 
@@ -409,12 +409,12 @@ our motivations and goals a number of choices were made.
 
 \subsection{Decisions}
 \subsubsection{No exposed pipeline}
-One of the first decisions was that we were not going to expose ITK’s
+One of the first decisions was that we were not going to expose ITK's
 demand driven pipeline. We decided to hide the pipeline because errors
 in using the pipeline are quite common to new users. Without the
 pipeline, results of operations are immediate so there is no chance
 that an image is out of date or missing information. Users can simply
-call the methods needed to set a filter’s parameters then execute the
+call the methods needed to set a filter's parameters then execute the
 filter.  The overhead required to connect, manage and update filters
 is removed from the interface. Also, with filters executing
 immediately, the object oriented and the procedural interfaces can be
@@ -438,7 +438,7 @@ complexity of the templated programming used in ITK, means that SWIG
 cannot directly wrap ITK.  Instead WrapITK requires additional tools
 to explicitly specify the interface of ITK in a format that SWIG can
 understand to wrap certain instantiations of the templated ITK
-interface. SimpleITK’s simplified interface is designed to be directly
+interface. SimpleITK's simplified interface is designed to be directly
 wrappable by SWIG.
 
 \subsubsection{Parameter Types}
@@ -475,7 +475,7 @@ SimpleITK would provide direct image, filter and transformation
 objects but not provide the undue burden of implicit copying.
 
 \subsubsection{Template-less Layer}
-The template-less or “typeless” layer concept’s goal is to hide ITK’s
+The template-less or “typeless” layer concept's goal is to hide ITK's
 template parameters from the user. A common suggestion was to simply
 consider all images as 32-bit or 64-bit real numbers. However, this
 approach can cause unacceptable memory use and performance
@@ -491,7 +491,7 @@ Therefore the template-less layer concept requires that SimpleITK
 images all have the same external type and interface, unlike ITK. The
 details of dealing with the different ITK template parameters is
 hidden so that the user can generically manipulate any image. An
-image’s pixel type and dimension are handled by SimpleITK internally
+image's pixel type and dimension are handled by SimpleITK internally
 and not directly exposed to the user, unlike ITK which requires the
 user to explicitly determine them at compile-time. At runtime a
 PixelIDValue, in the form of an integer and enumerated type is used to
@@ -522,11 +522,11 @@ From an interface perspective, the handling of the life of an object,
 i.e. how the object is constructed, copy and destroyed, is a key
 aspect of developing an intuitive interface. Because we chose not to
 expose smart pointers, we are use a completely different approach from
-ITK’s New method. Our approach is simple and translates to other
-languages seamlessly. We simply directly expose the image class’s
+ITK's New method. Our approach is simple and translates to other
+languages seamlessly. We simply directly expose the image class's
 constructors and destructor without the restrictions applied in
 ITK. The reasons ITK uses the New factory method include: adding
-flexibility to override a class’ implementation and enforcing smart
+flexibility to override a class' implementation and enforcing smart
 pointers use by preventing stack based allocation. Our approach to the
 SimpleITK interface does not allow our classes to be directly
 overridden but still allows ITK class overrides to occur
@@ -546,18 +546,18 @@ The SimpleITK image interface presented, utilizes the facade design
 pattern in conjunction with the private implementation, pimpl pattern
 \cite{Sutter1999}. It is a facade in that it provides a unified interface
 for multiple ITK class and template parameters. The single SimpleITK
-image class provides an interface to ITK’s Image, VectorImage, and
+image class provides an interface to ITK's Image, VectorImage, and
 LabelMap classes and supports  multiple dimensions and pixel
 types. However, the SimpleITK Image class is not polymorphic, i.e. it
 is not a virtual base class and does not contain virtual
 methods. Instead it relies on an internal pointer to a private class
 in the pimpl pattern to provide a unified polymorphic interface to
-ITK’s image class. The pimpl image has an abstract base class for the
+ITK's image class. The pimpl image has an abstract base class for the
 unified interface with templated derived classes to implement the
-specifics. This pimpl image fully encapsulate ITK’s templates and
+specifics. This pimpl image fully encapsulate ITK's templates and
 instantiates all the ITK image classes. A call from the SimpleITK
 interface to an ITK image is quite efficient and direct despite the
-complexity of the patterns used. A call to the SimpleITK image’s
+complexity of the patterns used. A call to the SimpleITK image's
 method, calls the same method in the Pimpl Image through the
 polymorphic interface, which then calls the ITK method. This dispatch
 method is direct and free from any conditionals. The SimpleITK image
@@ -572,7 +572,7 @@ be known. However, we have optimized these methods by using a form of
 lazy evaluation through a copy-on-write (COW)  policy. This policy is
 a key component that allows for an efficient implementation while
 removing pointers from the interface. Ironically, COW is implemented
-by using ITK’s smart pointers. When a copy of a SimpleITK image
+by using ITK's smart pointers. When a copy of a SimpleITK image
 occurs, a new ITK smart pointer to the image is create and
 stored. This new smart pointer increases the reference count contained
 of the ITK image. When there is a write request to the SimpleITK
@@ -614,13 +614,13 @@ conventional interface for different target languages.
 \subsection{The Design of the SimpleITK Filters}
 Among the objectives which drove the filter interface design of
 SimpleITK included removing the dependency on the image type at
-compile time, the removal of ITK’s data driven pipeline as well as
+compile time, the removal of ITK's data driven pipeline as well as
 providing a flexible interface which has an object oriented and
 procedural interface. With the template-less image class designed and
-the decision to use STL’s std::vector as parameters whose length is
+the decision to use STL's std::vector as parameters whose length is
 dependent on the image dimension, the interface was rather straight
 forward. Determining which type to use for filter method parameters
-was a difficulty when its the same type as the image’s pixel
+was a difficulty when its the same type as the image's pixel
 type. Generically using the double type resolved this issue. The
 double is a superset of all scalar pixel types except 64-bit integers,
 and for vector pixel types the scalar value is replicated for all
@@ -686,16 +686,16 @@ of filters which allow the user to select the output type such as
 casting, camping, and resample also use the “dual” dispatch
 infrastructure.
 
-By choosing to remove ITK’s pipeline architecture from SimpleITK there
+By choosing to remove ITK's pipeline architecture from SimpleITK there
 are numerous simplifications that we have taken advantage in our
 design. Among the ITK features SimpleITK omits are the advanced
 details of memory management occurring in the pipeline such as
 releasing data, and running filters “in place”. They are not relevant,
 since SimpleITK has an immediate execution model that lacks pipeline
-buffering. ITK’s interface for the ProcessObject, which is the basis
+buffering. ITK's interface for the ProcessObject, which is the basis
 for all filters, consists of over 40 public methods for manipulating
 the pipeline and managing the inputs and outputs. All these methods
-are irrelevant for SimpleITK’s Execute method approach. Omitting them
+are irrelevant for SimpleITK's Execute method approach. Omitting them
 simplifies the interface for each filter class.  Among the features
 still relevant is the monitoring of progress and events; these
 features are scheduled for the next release of SimpleITK, version 0.8.
@@ -708,7 +708,7 @@ version.  The goals and the design of the interface presented immense
 software engineering problems that had not been addressed before with
 ITK. Initially there were doubts that maintainable code and
 infrastructure could be developed to create a template-less layer for
-a significant part of ITK’s filters without unmaintainable, manually
+a significant part of ITK's filters without unmaintainable, manually
 created code. Our resulting implementation uses advanced C++ template
 meta-programming to perform compile-time execution of code generation,
 as well as traditional code generation based on the description of
@@ -785,7 +785,7 @@ such as “ImageSources”, “BinaryFunctorFilters”, and
 \subsubsection{Template Meta-program and Typelists}
 The crux of the problem for the template-less layer is the ability to
 map the runtime pixel type information, PixelIDValue, available from
-SimpleITK’s image to the compile-time template parameters in ITK and
+SimpleITK's image to the compile-time template parameters in ITK and
 visa versa. Template meta-programming in C++ is the use of templates
 to perform compile-time execution to generate code. SimpleITK uses a
 concept called “Typelists” list to operate on list of types, PixelIDs,
@@ -820,7 +820,7 @@ function, enabling the compile-time traversal of the Typelist to
 instantiate the member function.  With the member functions stored in
 the factory, they are indexable by the PixelIDValue at run-time. This
 MemberFunctionFactory is the heart of the dispatch system used to
-implement SimpleITK’s templateless layer and is an important software
+implement SimpleITK's templateless layer and is an important software
 engineering innovation for dispatching run-time mappings to ITK types.
 
 \subsubsection{Automated Documentation}
@@ -835,10 +835,10 @@ infrastructure and facade interfaces the annotations are written in
 the source code. Automated utilities have been developed to insert
 documentation strings into the JSON filter description files. These
 documentation fields are then incorporated into the generated source
-code as well as used for wrapped target language’s online
+code as well as used for wrapped target language's online
 documentation. Currently the ITK documentation sometimes contains C++
 implementation details or other features only available in native ITK.
-In the future ITK’s documentation may be further annotated to
+In the future ITK's documentation may be further annotated to
 note the relevance of different sections to allow better
 integration with SimpleITK and other external projects.
 
@@ -851,15 +851,15 @@ Segmentation of the human brain ventricle is a common task in the
 study of brain anatomy and its diseases.  Changes in the volume of
 cerebrospinal fluid and the shape of the brain ventricles are
 associated with a number of diseases including hydrocephalus
-\cite{Brandt1994} and schizophrenia [Staal2000]. 
+\cite{Brandt1994} and schizophrenia [Staal2000].
 
-In this example we use SimpleITK’s VectorConfidenceConnected filter
+In this example we use SimpleITK's VectorConfidenceConnected filter
 \cite{Ibanez2005} to segment an MRI data set from the Neuroimage Analysis
-Center’s Multi-modality MRI-based Atlas of the Brain \cite{Halle2013}.
+Center's Multi-modality MRI-based Atlas of the Brain \cite{Halle2013}.
 This filter begins with user-selected seed points then iteratively
 grows a region based on the similarity of the local vector image
 statistics.  To create a vector image we combine the MRI T1 and T2
-images into a single vector image. 
+images into a single vector image.
 
 Our MRI segmentation Python script begins with import SimpleITK and
 our image display routines showimg and showimg3d (available for
@@ -870,7 +870,7 @@ import SimpleITK as sitk
 from showimg import showimg, showimg3d
 
 Next we read the T1 and T2 brain images and create unsigned char
-version for display. 
+version for display.
 
 
 img_T1 = sitk.ReadImage("Data/nac-brain-atlas-1.0/volumes/A1_grayT1.nrrd")
@@ -879,8 +879,8 @@ img_T2 = sitk.ReadImage("Data/nac-brain-atlas-1.0/volumes/A1_grayT2.nrrd")
 img_T1_255 = sitk.Cast(sitk.RescaleIntensity(img_T1), sitk.sitkUInt8)
 img_T2_255 = sitk.Cast(sitk.RescaleIntensity(img_T2), sitk.sitkUInt8)
 
-Taking advantage of SimpleITK’s Python array slicing, extracting
-coronal slices from the MRI volumes is simple: 
+Taking advantage of SimpleITK's Python array slicing, extracting
+coronal slices from the MRI volumes is simple:
 
 yslice_T1 = img_T1_255[:,115,:]
 yslice_T2 = img_T2_255[:,115,:]
@@ -890,18 +890,18 @@ showimg(yslice_T2, dpi=30, title="t2image")
 [Insert t1image.png and t2image.png]
 
 From the T1 and T2 volumes we can create a vector volume using
-SimpleITK’s Compose function: 
+SimpleITK's Compose function:
 
-	img_multi = sitk.Compose(img_T1, img_T2)
+        img_multi = sitk.Compose(img_T1, img_T2)
 
 For segmenting the brain ventricle we start with 2 seed points, one in
-each half. 
+each half.
 
 seeds = [ [112,116,125], [110,120,132]  ]
 
 For visualization purpose, we create a seed volume, based on the
 dimensions of the T1 volume.  Setting the seed voxels to 1 is simple
-with SimpleITK’s array indexing. 
+with SimpleITK's array indexing.
 
 seedimg = sitk.Image(img_T1.GetSize(), sitk.sitkUInt8)
 seedimg.CopyInformation(img_T1)
@@ -910,32 +910,32 @@ seedimg[seeds[1]] = 1
 seedimg = sitk.BinaryDilate(seedimg, 3)
 
 \# Display the seed point volume overlaid on the T1 volume
-showimg3d( sitk.LabelOverlay(img_T1_255, seedimg), 
+showimg3d( sitk.LabelOverlay(img_T1_255, seedimg),
 zslices=range(seeds[0][2]-3, seeds[1][2]+3, 3),
-       		dpi=15, title="initialseed" )
+                dpi=15, title="initialseed" )
 
 [insert initialseed.png]
 
 Finally we perform the segmentation with a call to the
 VectorConfidenceConnected function and a call to BinaryMedian to
-filter the result. 
+filter the result.
 
-seg = sitk.VectorConfidenceConnected(img_multi, seeds, numberOfIterations=2, 
+seg = sitk.VectorConfidenceConnected(img_multi, seeds, numberOfIterations=2,
 multiplier=4.5)
 seg = sitk.BinaryMedian(seg, [3,3,3])
 
 To display our segmentation we can create a contour of it and overlay
-than on the T1 volume: 
+than on the T1 volume:
 
 overlayed = sitk.LabelOverlay(img_T1_255, sitk.LabelContour(seg))
 mysize = img_T1.GetSize()
 showimg3d( overlayed, yslices=range(100,mysize[1]-100,15),
-    		zslices=range(100,mysize[2]-100,15), dpi=30, title="segmentation" )
+                zslices=range(100,mysize[2]-100,15), dpi=30, title="segmentation" )
 
 [insert segmentation.png]
 
 And using a volume renderer we can visualize the ventricle
-segmentation in 3d. 
+segmentation in 3d.
 
 [insert ventricle3.png]
 
@@ -944,17 +944,16 @@ segmentation in 3d.
 \subsection{Microscopy Segmentation}
 Many modalities of microscopy acquire images at high resolution over
 large areas and can result in very large data sets. The Connectome Project at
-Harvard’s Center for Brain Science is one example [ reference to some
-  things ]. 
-  
-To illustrate the computation efficiency and the effectiveness of 
+Harvard's Center for Brain Science is one example \cite{Seyedhosseini2011}.
+
+To illustrate the computation efficiency and the effectiveness of
 using SimpleITK on larger real world problems, this example
 demonstrates a segmentation of an electron microscopy
 dataset. Ion-abrasion scanning electron microscopy (IA-SEM), is an
 image acquisition technique from the combination of traditional
 scanning electron microscopy acquired on a sample block with a focused
 ion-beam used to mill the block with nano-meter resolution. The method
-has been used for whole cell imaging \cite{Murphy2011}. 
+has been used for whole cell imaging \cite{Murphy2011}.
 
 The dataset chosen is a volume of 100nm gold beads used to analyze the
 procedures and methods for data acquisition. It was collected by the
@@ -963,14 +962,14 @@ Biology at the National Cancer Institute and is publicly available on
 a MIDAS data server at the National Library of Medicine
 (http://placid.nlm.nih.gov). The dataset was acquired at 5nm square
 voxels with a volume size of 1003x1003x296 pixels resulting in a 284
-megabyte volume. 
-	
+megabyte volume.
+
 The goal of this segmentation is to identify each distinct gold bead
 by creating a unique label for each gold bead. The segmentation occurs
-primarily in two steps: first identifying the individual beads and 
+primarily in two steps: first identifying the individual beads and
 second growing the seeds. This sequence of
 processing was developed in an interactive python session making use
-of SimpleITK’s Show method to visualize intermediate results. It was
+of SimpleITK's Show method to visualize intermediate results. It was
 then converted into a single script to assist with batch processing
 and parameter exploration (See Listing \ref{lst:05}).
 
@@ -978,7 +977,7 @@ and parameter exploration (See Listing \ref{lst:05}).
     Python script using SimpleITK to segment gold beads with the
     watersheds algorithm.}]{GoldBeadsSegmentation.py}
 
-The method first uses thresholding to identify the high intensity gold, 
+The method first uses thresholding to identify the high intensity gold,
 then uses mathematical morphology separate the beads of at least 15 pixels
 (75nm) in diameter. Next, each isolated part is given a unique
 identifier using the connected components algorithm. The watershed from
@@ -989,24 +988,24 @@ additional marker for the background. This marker image is used in
 conjunction with an edge image for the watershed algorithm. The
 SimpleITK code is easy to follow and brief and executes 16 ITK filter
 to perform its task. Many of those filters are invoked through
-overloaded operators for comparison and arithmetic. 
+overloaded operators for comparison and arithmetic.
 
 The resulting segmentation consists of over 9000 segmented gold
 beads. Segmentation is just one of many steps in the process of
 quantitative analysis. SimpleITK provides facilities for basic
 statistics in the LabelImageStatisticsImageFilter. However, for this
 study custom shape analysis was implemented in C++
-within ITK’s LabelMap framework, illustrating the complementary
+within ITK's LabelMap framework, illustrating the complementary
 nature of SimpleITK's and ITK's interfaces. When implementing new
 algorithms ITK can be the best tool to use, while interactively
 exploring existing algorithms for a solution may be better suited to
-SimpleITK. 
+SimpleITK.
 
 \subsection{SimpleFilters In 3D Slicer}
 The SimpleITK infrastructure can also be used as a way to integrate
 ITK into applications. Many image processing applications are designed
 in a modular fashions so that modules or extensions can be created to
-add new functions. A frequent objective is to integrate ITK’s
+add new functions. A frequent objective is to integrate ITK's
 important algorithms into an end user application with a graphical
 user interface. When trying to directly integrate ITK with
 applications, there are common problems encountered that SimpleITK can
@@ -1016,7 +1015,7 @@ instantiation and run-time dispatching. Also, for each filter or algorithm
 important parameters and default values need to be
 determined. SimpleITK can help with these and other difficulties to
 enable rapid integration of a large number of ITK filters into a
-application. 
+application.
 
 3D Slicer is in modular image computing platform used for quantitative
 analysis in medical image computing and clinical research
@@ -1037,7 +1036,7 @@ the course of a single week at a National Alliance of Medical Image
 and Computing (NAMIC) project week, with the support of various member
 of the developer community, we created an initial implementation of the module
 encorporating over 200 SimpleITK image filters with user interfaces
-for their parameters. 
+for their parameters.
 
 The module was written in Python to take advantage of the ability
 to generate a string and evaluate that string at runtime.
@@ -1045,7 +1044,7 @@ By using this run-time capability with a few hundred lines of
 code, we were able to implement code to generate a GUI for the
 parameters and to execute each filter. This module was created without any
 filter specific code or compile time code generation, but by
-reading SimpleITK’s JSON descriptions files to obtain the
+reading SimpleITK's JSON descriptions files to obtain the
 parameters. The calls to configure filters for execution were
 constructed at runtime from strings. Also the documentation
 string in the JSON are used for mouse quick tips and hover overs. The
@@ -1063,7 +1062,7 @@ increase the number of algorithms that can be made available.
 
 \section{Discussion}
 The SimpleITK interface and wrapping for additional languages is a new
-and easy way to use ITK’s algorithms in a readily usable
+and easy way to use ITK's algorithms in a readily usable
 environment. A number of features of ITK are hidden and the bulk of
 the interface and usage has been simplified. Currently about 250
 algorithms are available through SimpleITK to be interactively
@@ -1083,7 +1082,7 @@ contains more information about how to get started using SimpleITK.
 While the foundations of ITK have been integrated into the SimpleITK
 interface such as images, transforms and interpolators as well as the
 infrastructure for source code generation for filter has been
-implemented, much of the work for ITK’s registration framework is yet
+implemented, much of the work for ITK's registration framework is yet
 to be done. Some ITK registration methods are ITK filters can easily
 be integrated as part of the current framework. The modular
 registration framework in ITK version 3 and the lastest version 4
@@ -1096,7 +1095,7 @@ ITK. We are always looking to hear back from SimpleITK users about
 what additional ITK filters are need to prioritize the remaining
 work. Many of the remaining fitler are not commonly used. So when the
 SimpleITK interface is tested, bugs in ITK may be encountered or other
-inconsistency discovered in ITK’s interface. These issues must be
+inconsistency discovered in ITK's interface. These issues must be
 addressed and fix in ITK, and slow down the development of SimpleITK.
 
 ITK is a very large toolkits consisting of millions of lines of
@@ -1117,7 +1116,7 @@ subscripting and native buffer interface for all languages is too
 large of a task. We seek the on going support of the ITK community to
 support these features and languages. Specifically, in the near future
 we hope to add native JAVA array integrations with SimpleITK image
-buffers, and improve SWIG’s wrapping for the R language to handle
+buffers, and improve SWIG's wrapping for the R language to handle
 enumeration types correctly.
 
 \subsection{Conclusion}
@@ -1140,8 +1139,8 @@ The authors declare that the research was conducted in the absence of any commer
 We would like to thank the ITK Community including all the users,
 developers and contributors. We would also like to acknowledge the
 work of Kedar Narayan, PhD, National Cancer Institute,  in collecting
-the IA-SEM data set. 
- 
+the IA-SEM data set.
+
 \paragraph{Funding\textcolon}
 
 This work has been supported by the American
