@@ -8,6 +8,7 @@ set(src_files
   filter.h
   itkGaussianExample.cxx
   GoldBeadsSegmentation.py
+  VentricleSegment.py
   )
 file(COPY ${src_files} DESTINATION ${CMAKE_BINARY_DIR})
 

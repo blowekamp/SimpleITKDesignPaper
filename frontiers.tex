@@ -863,83 +863,38 @@ images into a single vector image.
 
 Our MRI segmentation Python script begins with import SimpleITK and
 our image display routines showimg and showimg3d (available for
-download): 
+download):
 
-\begin{verbatim}
-import SimpleITK as sitk
-from showimg import showimg, showimg3d
 
 Next we read the T1 and T2 brain images and create unsigned char
-version for display.
-
-
-img_T1 = sitk.ReadImage("Data/nac-brain-atlas-1.0/volumes/A1_grayT1.nrrd")
-img_T2 = sitk.ReadImage("Data/nac-brain-atlas-1.0/volumes/A1_grayT2.nrrd")
-
-img_T1_255 = sitk.Cast(sitk.RescaleIntensity(img_T1), sitk.sitkUInt8)
-img_T2_255 = sitk.Cast(sitk.RescaleIntensity(img_T2), sitk.sitkUInt8)
+version for display (See figure \ref{fig:02}).
 
 Taking advantage of SimpleITK's Python array slicing, extracting
 coronal slices from the MRI volumes is simple:
 
-yslice_T1 = img_T1_255[:,115,:]
-yslice_T2 = img_T2_255[:,115,:]
-showimg(yslice_T1, dpi=30, title="t1image")
-showimg(yslice_T2, dpi=30, title="t2image")
-
-[Insert t1image.png and t2image.png]
-
 From the T1 and T2 volumes we can create a vector volume using
-SimpleITK's Compose function:
+SimpleITK's Compose function.
 
-        img_multi = sitk.Compose(img_T1, img_T2)
 
-For segmenting the brain ventricle we start with 2 seed points, one in
-each half.
-
-seeds = [ [112,116,125], [110,120,132]  ]
-
-For visualization purpose, we create a seed volume, based on the
-dimensions of the T1 volume.  Setting the seed voxels to 1 is simple
-with SimpleITK's array indexing.
-
-seedimg = sitk.Image(img_T1.GetSize(), sitk.sitkUInt8)
-seedimg.CopyInformation(img_T1)
-seedimg[seeds[0]] = 1
-seedimg[seeds[1]] = 1
-seedimg = sitk.BinaryDilate(seedimg, 3)
-
-\# Display the seed point volume overlaid on the T1 volume
-showimg3d( sitk.LabelOverlay(img_T1_255, seedimg),
-zslices=range(seeds[0][2]-3, seeds[1][2]+3, 3),
-                dpi=15, title="initialseed" )
-
-[insert initialseed.png]
-
-Finally we perform the segmentation with a call to the
-VectorConfidenceConnected function and a call to BinaryMedian to
-filter the result.
-
-seg = sitk.VectorConfidenceConnected(img_multi, seeds, numberOfIterations=2,
-multiplier=4.5)
-seg = sitk.BinaryMedian(seg, [3,3,3])
+For initializing the segmentation of the brain ventricle we start with
+2 seed points, one in each half. For visualization purpose, we create
+a seed volume, based on the dimensions of the T1 volume.  Setting the
+seed voxels to 1 is simple with SimpleITK's array indexing  (See
+figure \ref{fig:03}).
 
 To display our segmentation we can create a contour of it and overlay
 than on the T1 volume:
 
-overlayed = sitk.LabelOverlay(img_T1_255, sitk.LabelContour(seg))
-mysize = img_T1.GetSize()
-showimg3d( overlayed, yslices=range(100,mysize[1]-100,15),
-                zslices=range(100,mysize[2]-100,15), dpi=30, title="segmentation" )
-
-[insert segmentation.png]
+See figure \ref{fig:04}.
 
 And using a volume renderer we can visualize the ventricle
 segmentation in 3d.
 
-[insert ventricle3.png]
+See figure \ref{fig:05}.
 
-\end{verbatim}
+\lstinputlisting[language=Python, label=lst:04, caption={A Python script using SimpleITK to the
+    multi-modal segemntation of the lateral ventricles.}]{VentricleSegment.py}
+
 
 \subsection{Microscopy Segmentation}
 Many modalities of microscopy acquire images at high resolution over
@@ -1062,14 +1017,14 @@ increase the number of algorithms that can be made available.
 
 \section{Discussion}
 The SimpleITK interface with wrapping for additional languages is a new
-and easy way to use ITK's image processing algorithms that will 
+and easy way to use ITK's image processing algorithms that will
 make these algorithms available to a wider audience of domain scientists.
 A number of features of ITK are hidden and the bulk of
 the interface has been simplified. Currently approximately 250
 algorithms are available through SimpleITK for interactive
-exploration in a number of scripting and prototyping environments. 
+exploration in a number of scripting and prototyping environments.
 
-SimpleITK has already gone through several releases during 
+SimpleITK has already gone through several releases during
 development. The most current release available is 0.7.0rc1. As of
 this writing there have been over 7,000 binary downloads of SimpleITK
 on SourceForge. This number does not include those who have built SimpleITK
