@@ -6,8 +6,28 @@
 %\documentclass{frontiersSCNS} % for Science articles
 \documentclass{frontiersMED} % for Medicine articles
 
-\usepackage{url,lineno}
+\usepackage{url,lineno,listings}
 \linenumbers
+
+\lstset{ %
+language=C++,                % choose the language of the code
+basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+numbers=right,                   % where to put the line-numbers
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+stepnumber=1,                   % the step between two line-numbers. If it is 1 each line will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,           % adds a frame around the code
+tabsize=2,          % sets default tabsize to 2 spaces
+captionpos=b,           % sets the caption-position to bottom
+breaklines=true,        % sets automatic line breaking
+breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
+escapeinside={\%*}{*)}          % if you want to add a comment within your code
+}
+
 
 % Leave a blank line between paragraphs in stead of using \\
 
@@ -59,12 +79,93 @@ SimpleITK is a new interface to the Insight Segmentation and Registration Toolki
 \end{abstract}
 
 \section{Introduction}
+The proper practice of the scientific method requires the systematic
+verification of reproducibility of published reports
+\cite{Popper1934}. Ideally, this verification must be performed by
+independent observers in order for it to be trustable \cite{Popper1963}. In
+the context of computational science, the reports of scientific
+research, must include the means and the complete details required to
+enable independent groups to fully replicate the results that are
+being published. In particular, they should include: data, reports,
+list of experimental parameters, and software.
 
-% For Original Research Articles, Clinical Trial Articles, and Technology Reports the introduction should be succinct, with no subheadings.
-%
-% For Clinical Case Studies the Introduction should include symptoms at presentation, physical exams and lab results.
-%
-Text Text Text Text Text Text  Text Text Text Text Text Text Text Text Text  Text Text Text Text Text Text. Text Text Text Text Text Text  Text Text Text Text Text Text Text Text Text  Text Text Text Text Text Text. Text Text Text Text Text Text  Text Text Text Text Text Text Text Text Text  Text Text Text Text Text Text.Text Text Text Text Text Text  Text Text Text Text Text Text Text Text Text  Text Text Text Text Text Text.
+Open source software provides public implementations of state of the
+art algorithms, that facilitate the accelerated advancement of a
+field, through a more efficient research lifecycle, and through more
+practical education. The National Library of Medicine’s Insight
+Segmentation and Registration Toolkit (ITK) is a leading open source
+software for biomedical image analysis. Since 1999, it has been used
+in fields as varied as brain registration for neuroscience, microscopy
+image analysis, radiation treatment planning, image segmentation for
+brain tumors, and processing of electron microscopy, as well as
+non-medical applications such as satellite imagery and industrial
+inspection.
+
+Our fundamental goal in developing SimpleITK was to grow the user base
+of ITK.  Whereas direct use of the ITK programming interface requires
+expertise in templated C++, SimpleITK was designed to be accessible
+from a variety of languages.  Furthermore SimpleITK has a
+straightforward interface that does not require knowledge of the
+intricacies of ITK’s templated types. By lowering the bar to access
+ITK’s portfolio of image processing algorithms we hope to further the
+goals of open source and open science.
+
+\subsection{The Insight Segmentation and Registration Toolkit}
+
+The Insight Segmentation and Registration Toolkit (ITK) was originally
+conceived as public software tools for the analysis of the Visible
+Human Project by the National Library of Medicine (NLM) with
+partnership from six other institutes at the National Institutes of
+Health (NIH). During the initial development the mission of ITK was
+outlined as: “a software foundation for future research, an archival
+repository of image processing algorithms, a catalog of validation
+techniques, as well as a platform for advanced product development”
+\cite{Yoo2002}. NLM has continued to support ITK through Algorithm Adaptors
+and Data Distribution (A2D2) programs and on going maintenance, while
+trying to foster the development of a sustainable open source
+community. In 2010 NLM initiated a major revision and refactoring of
+the toolkit funded by the American Recovery and Reinvestment
+Act. Among the objectives outlined is to simplify ITK.
+
+Through the contributions of the ITK community and continued funding
+the scope of ITK has continued to grow. The version 4 refactoring
+separated ITK into a modular structure which now contains over 100
+modules. The segmentation algorithms available in ITK include region
+growing, level sets, markov random field classifiers, watersheds and
+other statistical classifiers. The registration framework is designed
+to be modular with the distinct parts for a transform, interpolator,
+transform, optimizer, and image similarity metric along with support
+for multi-resolution methods. ITK also contains data-structures for
+spatial object, histograms, finite element meshes, quad-edge meshes,
+neural networks, images and narrow band level-sets. There are a large
+number of third party libraries that are supported and used for input
+and output. Additionally there are a numerous image filters algorithms
+available including mathematical morphology, smoothing, deconvolution,
+distance maps, fast marching, image fusion, image statistics,
+geometric filters, and image sources among many others. ITK contains a
+wealth of algorithms, interfaces and data-structures to provide a
+platform for research in algorithm development and a collection of
+image processing algorithms.
+
+The design of ITK focuses on providing a powerful and flexible
+platform to allow for research, experimentation and development of
+algorithms. To that end one of the notable implementation details in
+ITK is the extensive use of C++ templates. The ITK image class is a
+templated structure over both the pixel type as well as the image
+dimension. The choice pervades all areas of the toolkit. Image filters
+must be templated over the image type. Also the structures and objects
+used with the image classes are also templated. These data structures
+include image iterators, points, and indices. The results of this
+interface design can be seen the code listing, from the ITK Software
+Guide \cite{Ibanez2003}.
+
+\lstinputlisting[firstline=36, lastline=74]{itkGaussianExample.cxx}
+
+Notably missing from the design goals of ITK are usability and accessibility.
+
+
+
+
 
 %\begin{methods}
 \section{Material \& Methods}
