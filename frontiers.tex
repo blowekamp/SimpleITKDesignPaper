@@ -423,7 +423,7 @@ One of the fundamental goals of SimpleITK was to provide language
 bindings for different languages such as Python, Java, C\#. Due to the
 large number of language targets, a single unified tool for all
 languages was required for maintainability. The Simplified Wrapper and
-Interface Generator (SWIG) [Beazly2003], is open source and a powerful
+Interface Generator (SWIG), is open source and a powerful
 development tool for wrapping C++ with numerous high-level programming
 languages. SWIG has support for over 20 target languages. It is
 capable of parsing basic C++ interfaces and generating glue code to
@@ -499,7 +499,7 @@ intrinsic run-time attributes of the SimpleITK image.
 \subsubsection{Facade Interfaces}
 The facade design pattern is a software design pattern to present the
 user with an simplified interface to a larger body of code
-[Gamma1995]. This approach is how SimpleITK encapsulates ITK filters
+\cite{Gamma1995}. This approach is how SimpleITK encapsulates ITK filters
 and data objects, where  the body of code encapsulated is the set of
 template parameters for a class. Our facades internally use ITK
 objects and call ITK methods, so there is very little additional
@@ -542,7 +542,7 @@ first.
 
 The SimpleITK image interface presented, utilizes the facade design
 pattern in conjunction with the private implementation, pimpl pattern
-[Sutter1999]. It is a facade in that it provides a unified interface
+\cite{Sutter1999}. It is a facade in that it provides a unified interface
 for multiple ITK class and template parameters. The single SimpleITK
 image class provides an interface to ITK’s Image, VectorImage, and
 LabelMap classes and supports  multiple dimensions and pixel
@@ -624,7 +624,8 @@ double is a superset of all scalar pixel types except 64-bit integers,
 and for vector pixel types the scalar value is replicated for all
 components. Here is a prototypical example interface:
 
-insert filter.h
+
+\lstinputlisting{filter.h}
 
 In ITK, the pipeline needs to be explicitly updated before results can
 be examined. This update initiates the examination of the dependencies
@@ -769,7 +770,7 @@ and reliable.
 The generator of the source code is a text based program, which
 processes a set of text inputs and produces source code. Lua is a
 powerful, portable, fast, and lightweight scripting languages
-[Ierusalimschy2006]. We chose it as the language for the source code
+\cite{Ierusalimschy2006}. We chose it as the language for the source code
 generator script because its small size makes it easily included as
 part of the SimpleITK source and compiled during the build
 process. The generator script is derived with the Lua “Text Template
@@ -791,7 +792,7 @@ concept called “Typelists” list to operate on list of types, PixelIDs,
 which represent the types of pixels. Specifically these lists have
 compile-time operations to append, merge, intersect, search, traverse
 and perform permutations of selections from two lists
-[Alexandrescu2001]. The runtime id of a pixel type, PixelIDValue, is
+\cite{Alexandrescu2001}. The runtime id of a pixel type, PixelIDValue, is
 the index in the global InstantiatedPixelIDTypeList type, which is a
 Typelist of all the available pixel types. There are a variety of
 groups of PixelIDs declared as Typelists such as integer, real and
@@ -828,7 +829,7 @@ interface of SimpleITK would be unusable. Duplicating the effort to
 describe each algorithm and parameters with what has already been done
 in ITK would be a foolish task. Doxygen is the de facto standard tool
 for generating reference manuals of a programming interface from
-annotated source code [REF]. It is used as the source code annotation
+annotated source code (htttp://www.doxygen.org). It is used as the source code annotation
 throughout ITK and SimpleITK. For all the manually written SimpleITK
 infrastructure and facade interfaces the annotations are written in
 the source code. Automated utilities have been developed to insert
@@ -850,11 +851,11 @@ Segmentation of the human brain ventricle is a common task in the
 study of brain anatomy and its diseases.  Changes in the volume of
 cerebrospinal fluid and the shape of the brain ventricles are
 associated with a number of diseases including hydrocephalus
-[Brandt1994] and schizophrenia [Staal2000]. 
+\cite{Brandt1994} and schizophrenia [Staal2000]. 
 
 In this example we use SimpleITK’s VectorConfidenceConnected filter
-[Ibanez2005] to segment an MRI data set from the Neuroimage Analysis
-Center’s Multi-modality MRI-based Atlas of the Brain [Halle2013].
+\cite{Ibanez2005} to segment an MRI data set from the Neuroimage Analysis
+Center’s Multi-modality MRI-based Atlas of the Brain \cite{Halle2013}.
 This filter begins with user-selected seed points then iteratively
 grows a region based on the similarity of the local vector image
 statistics.  To create a vector image we combine the MRI T1 and T2
@@ -951,7 +952,7 @@ dataset. Ion-abrasion scanning electron microscopy (IA-SEM), is an
 image acquisition technique from the combination of traditional
 scanning electron microscopy acquired on a sample block with a focus
 ion-beam used to mill the block with nano-meter resolution. The method
-has been used for whole cell imaging [Murphy2011]. 
+has been used for whole cell imaging \cite{Murphy2011}. 
 
 The dataset chosen is a volume of 100nm gold beads  use to analyze the
 procedures and methods for data acquisition. It was collected by the
@@ -974,7 +975,7 @@ thresholding to identify the high intensity gold, then uses
 mathematical morphology separate the beads of at least 15 pixel or
 75nm in diameter. Next, each isolated part is given a unique
 identifier with the connected components algorithm. The watershed from
-markers algorithm available in ITK [Beare2006], can be seen as
+markers algorithm available in ITK \cite{Beare2006}, can be seen as
 multi-label greedy region growing subject to the penalty of the
 feature image. The individuated gold components are combined with an
 additional marker for the background. This marker image is used in
@@ -1017,7 +1018,7 @@ application.
 
 3D Slicer is in modular image computing platform used for quantitative
 analysis in medical image computing and clinical research
-[Fedorov2012]. It is a free and open sound application with support
+\cite{Fedorov2012}. It is a free and open sound application with support
 for numerous biomedical imaging formats and functionality such as
 automatic interactive segmentation, registration, and
 visualization. It is build upon a variety of open source software
