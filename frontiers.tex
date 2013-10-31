@@ -175,10 +175,12 @@ dimension. The choice pervades all areas of the toolkit. Image filters
 must be templated over the image type. Also the structures and objects
 used with the image classes are also templated. These data structures
 include image iterators, points, and indices. The results of this
-interface design can be seen the code listing, from the ITK Software
-Guide \cite{Ibanez2005}.
+interface design can be seen code listing \ref{lst:01}, taken from the
+ITK Software Guide \cite{Ibanez2005}.
 
-\lstinputlisting[firstline=36, lastline=74]{itkGaussianExample.cxx}
+\lstinputlisting[firstline=36, lastline=74, label=lst:01, caption={A
+    typical ITK example with templates, which reads an image, runs a
+    Gaussian convolution then writes it back out to disk.}]{itkGaussianExample.cxx}
 
 Notably missing from the design goals of ITK are usability and accessibility.
 
@@ -622,10 +624,10 @@ was a difficulty when its the same type as the image’s pixel
 type. Generically using the double type resolved this issue. The
 double is a superset of all scalar pixel types except 64-bit integers,
 and for vector pixel types the scalar value is replicated for all
-components. Here is a prototypical example interface:
+components. Code Listing \ref{lst:02} can be used as a reference.
 
-
-\lstinputlisting{filter.h}
+\lstinputlisting[label=lst:02, caption={A prototypical example of a
+    SimpleITK filter interface.}]{filter.h}
 
 In ITK, the pipeline needs to be explicitly updated before results can
 be examined. This update initiates the examination of the dependencies
@@ -968,7 +970,7 @@ individual beads and the second growing the seeds. This sequence of
 processing was developed in an interactive python session making use
 of SimpleITK’s Show method to visualize intermediate results. It was
 then converted into a single script to assist with batch processing
-and parameter exploration (see code listing). The method first uses
+and parameter exploration (See Listing \ref{lst:05}). The method first uses
 thresholding to identify the high intensity gold, then uses
 mathematical morphology separate the beads of at least 15 pixel or
 75nm in diameter. Next, each isolated part is given a unique
@@ -982,10 +984,9 @@ SimpleITK code is easy to follow and brief, and executes 16 ITK filter
 to perform its task. Many of those filters are invoked through
 overloaded operators for comparison and arithmetic. 
 
-\begin{verbatim}
-	insert GoldBeadSegmentation.py
-	insert gold.png + gold_seg.png + gold_3d.png
-\end{verbatim}
+\lstinputlisting[language=Python, label=lst:05, caption={Example
+    Python script using SimpleITK to segment gold beads with the
+    watersheds algorithm.}]{GoldBeadsSegmentation.py}
 
 The resulting segmentation consists of over 9000 segmented gold
 beads. Segmentation is usual just one of many steps in the process of
