@@ -838,9 +838,9 @@ documentation fields are then incorporated into the generated source
 code as well as used for wrapped target language’s online
 documentation. Currently the ITK documentation sometimes contains C++
 implementation details or other features only available in native ITK.
-In the future ITK’s Doxygen annotation may be further marked up to
-note the relevance of different sections so that it can be better
-integrated into SimpleITK and other projects.
+In the future ITK’s documentation may be further annotated to
+note the relevance of different sections to allow better
+integration with SimpleITK and other external projects.
 
 
 
@@ -942,19 +942,21 @@ segmentation in 3d.
 \end{verbatim}
 
 \subsection{Microscopy Segmentation}
-Many modalities of microscopy are acquired at high resolution over a
-large area resulting in data that is large. The Connectome Project at
+Many modalities of microscopy acquire images at high resolution over
+large areas and can result in very large data sets. The Connectome Project at
 Harvard’s Center for Brain Science is one example [ reference to some
-  things ]. To illustrate the computation efficiency and the
-effectiveness of using SimpleITK on larger real world problems, we are
-selecting a segmentation of an electron microscopy
+  things ]. 
+  
+To illustrate the computation efficiency and the effectiveness of 
+using SimpleITK on larger real world problems, this example
+demonstrates a segmentation of an electron microscopy
 dataset. Ion-abrasion scanning electron microscopy (IA-SEM), is an
 image acquisition technique from the combination of traditional
-scanning electron microscopy acquired on a sample block with a focus
+scanning electron microscopy acquired on a sample block with a focused
 ion-beam used to mill the block with nano-meter resolution. The method
 has been used for whole cell imaging \cite{Murphy2011}. 
 
-The dataset chosen is a volume of 100nm gold beads  use to analyze the
+The dataset chosen is a volume of 100nm gold beads used to analyze the
 procedures and methods for data acquisition. It was collected by the
 Biophysics Section and Electron Microscopy Core, Laboratory of Cell
 Biology at the National Cancer Institute and is publicly available on
@@ -965,38 +967,39 @@ megabyte volume.
 	
 The goal of this segmentation is to identify each distinct gold bead
 by creating a unique label for each gold bead. The segmentation occurs
-primarily in two steps, with the first being  identification of the
-individual beads and the second growing the seeds. This sequence of
+primarily in two steps: first identifying the individual beads and 
+second growing the seeds. This sequence of
 processing was developed in an interactive python session making use
 of SimpleITK’s Show method to visualize intermediate results. It was
 then converted into a single script to assist with batch processing
-and parameter exploration (See Listing \ref{lst:05}). The method first uses
-thresholding to identify the high intensity gold, then uses
-mathematical morphology separate the beads of at least 15 pixel or
-75nm in diameter. Next, each isolated part is given a unique
-identifier with the connected components algorithm. The watershed from
-markers algorithm available in ITK \cite{Beare2006}, can be seen as
-multi-label greedy region growing subject to the penalty of the
-feature image. The individuated gold components are combined with an
-additional marker for the background. This marker image is used in
-conjunction with an edge image for the watershed algorithm. The
-SimpleITK code is easy to follow and brief, and executes 16 ITK filter
-to perform its task. Many of those filters are invoked through
-overloaded operators for comparison and arithmetic. 
+and parameter exploration (See Listing \ref{lst:05}).
 
 \lstinputlisting[language=Python, label=lst:05, caption={Example
     Python script using SimpleITK to segment gold beads with the
     watersheds algorithm.}]{GoldBeadsSegmentation.py}
 
+The method first uses thresholding to identify the high intensity gold, 
+then uses mathematical morphology separate the beads of at least 15 pixels
+(75nm) in diameter. Next, each isolated part is given a unique
+identifier using the connected components algorithm. The watershed from
+markers algorithm available in ITK \cite{Beare2006}, is
+a multi-label greedy region growing subject to the penalty of the
+feature image. The individuated gold components are combined with an
+additional marker for the background. This marker image is used in
+conjunction with an edge image for the watershed algorithm. The
+SimpleITK code is easy to follow and brief and executes 16 ITK filter
+to perform its task. Many of those filters are invoked through
+overloaded operators for comparison and arithmetic. 
+
 The resulting segmentation consists of over 9000 segmented gold
 beads. Segmentation is just one of many steps in the process of
 quantitative analysis. SimpleITK provides facilities for basic
 statistics in the LabelImageStatisticsImageFilter. However, for this
-study custom shape analysis was needed, so it was implemented in C++
-within ITK’s LabelMap framework. This illustrates the complementary
-nature of SimpleITK and ITK interfaces. When implementing new
+study custom shape analysis was implemented in C++
+within ITK’s LabelMap framework, illustrating the complementary
+nature of SimpleITK's and ITK's interfaces. When implementing new
 algorithms ITK can be the best tool to use, while interactively
-exploring existing algorithms for a solution can be done with
+exploring existing algorithms for a solution may be suited with
 SimpleITK. 
 
 \subsection{SimpleFilters In 3D Slicer}
