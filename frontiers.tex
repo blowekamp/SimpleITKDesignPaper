@@ -845,32 +845,211 @@ integrated into SimpleITK and other projects.
 
 \section{Examples}
 
-Frontiers requires figures to be submitted individually, in the same order as they are referred to in the manuscript. Figures will then be automatically embedded at the bottom of the submitted manuscript. Kindly ensure that each table and figure is mentioned in the text and in numerical order. Permission must be obtained for use of copyrighted material from other sources (including the web). Please note that it is compulsory to follow figure instructions. Figures which are not according to the guidelines will cause substantial delay during the production process.
+\subsection{Multi-modal Vectricle Segmentation}
+Segmentation of the human brain ventricle is a common task in the
+study of brain anatomy and its diseases.  Changes in the volume of
+cerebrospinal fluid and the shape of the brain ventricles are
+associated with a number of diseases including hydrocephalus
+[Brandt1994] and schizophrenia [Staal2000]. 
 
-\begin{table}[!t]
-\processtable{Resolution Requirements for the figures\label{Tab:02}}
-{\begin{tabular}{lllll}\toprule
-Image Type & Description & Format & Color Mode & Resolution\\\midrule
-Line Art & An image composed of lines and text,  & TIFF, JPEG & RGB, Bitmap & 900 - 1200 dpi\\
-           & which does not contain tonal or shaded areas.& & &\\
-           Halftone & A continuous tone photograph, which contains no text. & TIFF, EPS, JPEG & RGB, Grayscale & 300 dpi\\
-Combination & Image contains halftone + text or line art elements. & TIFF, JPEG & RGB,Grayscale & 600 - 900 dpi\\\botrule
-\end{tabular}}{This is a footnote}
-\end{table}
+In this example we use SimpleITK’s VectorConfidenceConnected filter
+[Ibanez2005] to segment an MRI data set from the Neuroimage Analysis
+Center’s Multi-modality MRI-based Atlas of the Brain [Halle2013].
+This filter begins with user-selected seed points then iteratively
+grows a region based on the similarity of the local vector image
+statistics.  To create a vector image we combine the MRI T1 and T2
+images into a single vector image. 
 
-\begin{equation}
-\sum x+ y =Z\label{eq:01}
-\end{equation}
+Our MRI segmentation Python script begins with import SimpleITK and
+our image display routines showimg and showimg3d (available for
+download): 
 
-\textbf{Table\ref{Tab:02}} shows the resolution requirements for the figures. The figures must be legible:
-\begin{enumerate}
-\item The smallest visible text is no less than 8 points in height, when viewed at actual size.
-\item Solid lines are not broken up.
-\item Image areas are not pixelated or stair stepped.
-\item Text is legible and of high quality.
-\item Any lines in the graphic are no smaller than 2 points width.
-\item The actual size of the figure must be of at least 8.5 cm.
-\end{enumerate}
+import SimpleITK as sitk
+from showimg import showimg, showimg3d
+
+Next we read the T1 and T2 brain images and create unsigned char
+version for display. 
+
+img_T1 = sitk.ReadImage("Data/nac-brain-atlas-1.0/volumes/A1_grayT1.nrrd")
+img_T2 = sitk.ReadImage("Data/nac-brain-atlas-1.0/volumes/A1_grayT2.nrrd")
+
+img_T1_255 = sitk.Cast(sitk.RescaleIntensity(img_T1), sitk.sitkUInt8)
+img_T2_255 = sitk.Cast(sitk.RescaleIntensity(img_T2), sitk.sitkUInt8)
+
+Taking advantage of SimpleITK’s Python array slicing, extracting
+coronal slices from the MRI volumes is simple: 
+
+yslice_T1 = img_T1_255[:,115,:]
+yslice_T2 = img_T2_255[:,115,:]
+showimg(yslice_T1, dpi=30, title="t1image")
+showimg(yslice_T2, dpi=30, title="t2image")
+
+[Insert t1image.png and t2image.png]
+
+From the T1 and T2 volumes we can create a vector volume using
+SimpleITK’s Compose function: 
+
+	img_multi = sitk.Compose(img_T1, img_T2)
+
+For segmenting the brain ventricle we start with 2 seed points, one in
+each half. 
+
+seeds = [ [112,116,125], [110,120,132]  ]
+
+For visualization purpose, we create a seed volume, based on the
+dimensions of the T1 volume.  Setting the seed voxels to 1 is simple
+with SimpleITK’s array indexing. 
+
+seedimg = sitk.Image(img_T1.GetSize(), sitk.sitkUInt8)
+seedimg.CopyInformation(img_T1)
+seedimg[seeds[0]] = 1
+seedimg[seeds[1]] = 1
+seedimg = sitk.BinaryDilate(seedimg, 3)
+
+# Display the seed point volume overlaid on the T1 volume
+showimg3d( sitk.LabelOverlay(img_T1_255, seedimg), 
+zslices=range(seeds[0][2]-3, seeds[1][2]+3, 3),
+       		dpi=15, title="initialseed" )
+
+[insert initialseed.png]
+
+Finally we perform the segmentation with a call to the
+VectorConfidenceConnected function and a call to BinaryMedian to
+filter the result. 
+
+seg = sitk.VectorConfidenceConnected(img_multi, seeds, numberOfIterations=2, 
+multiplier=4.5)
+seg = sitk.BinaryMedian(seg, [3,3,3])
+
+To display our segmentation we can create a contour of it and overlay
+than on the T1 volume: 
+
+overlayed = sitk.LabelOverlay(img_T1_255, sitk.LabelContour(seg))
+mysize = img_T1.GetSize()
+showimg3d( overlayed, yslices=range(100,mysize[1]-100,15),
+    		zslices=range(100,mysize[2]-100,15), dpi=30, title="segmentation" )
+
+[insert segmentation.png]
+
+And using a volume renderer we can visualize the ventricle
+segmentation in 3d. 
+
+[insert ventricle3.png]
+
+\subsection{Microscopy Segmentation}
+Many modalities of microscopy are acquired at high resolution over a
+large area resulting in data that is large. The Connectome Project at
+Harvard’s Center for Brain Science is one example [ reference to some
+  things ]. To illustrate the computation efficiency and the
+effectiveness of using SimpleITK on larger real world problems, we are
+selecting a segmentation of an electron microscopy
+dataset. Ion-abrasion scanning electron microscopy (IA-SEM), is an
+image acquisition technique from the combination of traditional
+scanning electron microscopy acquired on a sample block with a focus
+ion-beam used to mill the block with nano-meter resolution. The method
+has been used for whole cell imaging [Murphy2011]. 
+
+The dataset chosen is a volume of 100nm gold beads  use to analyze the
+procedures and methods for data acquisition. It was collected by the
+Biophysics Section and Electron Microscopy Core, Laboratory of Cell
+Biology at the National Cancer Institute and is publicly available on
+a MIDAS data server at the National Library of Medicine
+(http://placid.nlm.nih.gov). The dataset was acquired at 5nm square
+voxels with a volume size of 1003x1003x296 pixels resulting in a 284
+megabyte volume. 
+	
+The goal of this segmentation is to identify each distinct gold bead
+by creating a unique label for each gold bead. The segmentation occurs
+primarily in two steps, with the first being  identification of the
+individual beads and the second growing the seeds. This sequence of
+processing was developed in an interactive python session making use
+of SimpleITK’s Show method to visualize intermediate results. It was
+then converted into a single script to assist with batch processing
+and parameter exploration (see code listing). The method first uses
+thresholding to identify the high intensity gold, then uses
+mathematical morphology separate the beads of at least 15 pixel or
+75nm in diameter. Next, each isolated part is given a unique
+identifier with the connected components algorithm. The watershed from
+markers algorithm available in ITK [Beare2006], can be seen as
+multi-label greedy region growing subject to the penalty of the
+feature image. The individuated gold components are combined with an
+additional marker for the background. This marker image is used in
+conjunction with an edge image for the watershed algorithm. The
+SimpleITK code is easy to follow and brief, and executes 16 ITK filter
+to perform its task. Many of those filters are invoked through
+overloaded operators for comparison and arithmetic. 
+
+	insert GoldBeadSegmentation.py
+	insert gold.png + gold_seg.png + gold_3d.png
+
+The resulting segmentation consists of over 9000 segmented gold
+beads. Segmentation is usual just one of many steps in the process of
+quantitative analysis. SimpleITK provides facilities for basic
+statistics in the LabelImageStatisticsImageFilter. However, for this
+study custom shape analysis was needed, so it was implemented in C++
+within ITK’s LabelMap framework. This illustrates the complementary
+nature of SimpleITK and ITK interfaces. When implementing new
+algorithms ITK can be the best tool to use, while interactively
+exploring existing algorithms for a solution can be done with
+SimpleITK. 
+
+\subsection{SimpleFilters In 3D Slicer}
+The SimpleITK infrastructure can also be used as a way to integrate
+ITK into applications. Many image processing applications are designed
+in a modular fashions so that modules or extensions can be created to
+add new functions. A frequent objective is to integrate ITK’s
+important algorithms into an end user application with a graphical
+user interface. When trying to directly integrate ITK with
+applications, there are common problems encountered that SimpleITK can
+resolve.  Firstly, interfacing the types the application supports with
+the templated types requires dealing with template parameter
+instantiation and run-time dispatching. Next, each filer or algorithm
+important parameters and default values need to be
+determined. SimpleITK can help with these and other difficulties to
+enable rapid integration of a large number of ITK filters into a
+application. 
+
+3D Slicer is in modular image computing platform used for quantitative
+analysis in medical image computing and clinical research
+[Fedorov2012]. It is a free and open sound application with support
+for numerous biomedical imaging formats and functionality such as
+automatic interactive segmentation, registration, and
+visualization. It is build upon a variety of open source software
+including ITK to provide core functionality such as visualization, GUI
+support, and Python as a scripting languages. In has a modular
+architecture to support custom plug-ins. Despite 3D Slicer using ITK
+in its C++ backend, the burden of creating a module for most of ITK
+filters was too great, so many basic image processing algorithms
+available in ITK were missing as end usable modules.
+
+The SimpleFilters module in 3D Slicer was created to provide a basic
+GUI to the image filters available in ITK through SimpleITK. During
+the course of a single week at a National Alliance of Medical Image
+and Computing (NAMIC) project week with the support of various member
+of the community an initial implementation of the module was created
+which was able execute over 200 image filters  from a user interface
+with parameters. The module was written in Python taking full
+advantage of the features in the scripting language. Specifically
+being able to generate string to evaluate during runtime and dynamic
+typing. By using this run-time capability with a few hundred lines of
+code, we were able to implement code to generated a GUI for the
+parameters and executed each filter. This was done without any code
+specific for a specific filter or compile time code generation, but by
+reading SimpleITK’s JSON descriptions files to obtain the
+parameter. The calls to configure filters for execution were
+constructed at runtime from strings. Additionally the documentation
+string in the JSON are used for mouse quick tips and hover overs. The
+module uses SimpleITK and it’s typeless layer for runtime type
+dispatching, so all image types are supported without additional case
+or switch statements.
+
+The JSON filter descriptions in SimpleITK contain the essence of
+ITK. They provide a standard to describe the parameters for
+algorithms, along with their default values and documentation. In
+addition to the interface and language binding that SimpleITK provide
+these descriptions are another great asset when integrating ITK into
+applications which dramatically reduce the implementation time and
+increase the number of algorithms that can be made available.
 
 \section{Discussion}
 
