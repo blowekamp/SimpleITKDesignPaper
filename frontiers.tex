@@ -627,7 +627,7 @@ was a difficulty when its the same type as the image's pixel
 type. Generically using the double type resolved this issue. The
 double is a superset of all scalar pixel types except 64-bit integers,
 and for vector pixel types the scalar value is replicated for all
-components. Code Listing \ref{lst:02} can be used as a reference.
+components. Listing \ref{lst:02} can be used as a reference.
 
 \lstinputlisting[label=lst:02, caption={A prototypical example of a
     SimpleITK filter interface.}]{filter.h}
@@ -724,7 +724,7 @@ similar projects.
 SimpleITK is implemented with more than just static code. It is a
 complex sequence of code generation and compilation to produce the C++
 interface, followed by wrapping with SWIG for the target
-languages (See Figure \ref{fig:01}). The manually written common code of SimpleITK consists of
+languages (See figure \ref{fig:01}). The manually written common code of SimpleITK consists of
 the meta-programing infrastructure for the template-less layer and the
 core data structures such as the image and the transform
 classes. Also, a few of the filters and the reading, writing and image
@@ -851,43 +851,43 @@ integration with SimpleITK and other external projects.
 \section{Examples}
 
 \subsection{Multi-modal Vectricle Segmentation}
-Segmentation of the human brain lateral ventricle is a common task in the
+Segmentation of the human brain lateral ventricles is a common task in the
 study of brain anatomy and its diseases.  Changes in the volume of
-cerebrospinal fluid and the shape of the brain ventricles are
+cerebrospinal fluid and the shape of the cerebral ventricles are
 associated with a number of diseases including hydrocephalus
-\cite{Brandt1994} and schizophrenia [Staal2000].
+\cite{Brandt1994} and schizophrenia \cite{Staal2000}.
 
-In this example we use SimpleITK's VectorConfidenceConnected filter
+In this example we use SimpleITK's \textit{VectorConfidenceConnected} filter
 \cite{Ibanez2005} to segment an MRI data set from the Neuroimage Analysis
 Center's Multi-modality MRI-based Atlas of the Brain \cite{Halle2013}.
 This filter begins with user-selected seed points then iteratively
 grows a region based on the similarity of the local vector image
-statistics.  To create a vector image we combine the MRI T1 and T2
+statistics. To create a vector image we combine the MRI T1 and T2
 images into a single vector image.
 
 Our MRI segmentation Python script begins with importing SimpleITK and
-our image display routines showimg and showimg3d (available for
+our image display routines \textit{showimg} and \textit{showimg3d} (available for
 download).  Next we read the T1 and T2 brain images and create unsigned char
-version for displays (See figure \ref{fig:02}, lines 5-10).
+version for displays (See listing \ref{lst:03}: lines 5-10).
 
 Taking advantage of SimpleITK's Python array slicing, extracting
-coronal slices from the MRI volumes is simple (See figure \ref{fig:02}, lines 13-14).  
-Then from the T1 and T2 volumes we can create a vector volume using
-SimpleITK's Compose function (See figure \ref{fig:02}, line 18).
+coronal slices from the MRI volumes is simple (See figure \ref{fig:02}
+and listing \ref{lst:03}: lines 13-14). Then from the original T1 and T2 volumes we
+create a vector volume using SimpleITK's Compose function (See listing \ref{lst:03}: line 18).
 
-
-For initializing the segmentation of the brain ventricle we start with
-2 seed points, one in each half (See figure \ref{fig:02}, line 21). 
+For initializing the segmentation of the cerebral ventricles  we start with
+2 seed points, one each side (See listing \ref{lst:03}: line 21). 
 For visualization purposes, we create
 a seed volume, based on the dimensions of the T1 volume.  Setting the
-seed voxels to 1 is simple with SimpleITK's array indexing  (See
-figure \ref{fig:02}, line 26-27, and figure \ref{fig:03}).
+seed voxels to 1 is simple with SimpleITK's array indexing (See listing
+\ref{lst:03}: line 25-29, and figure \ref{fig:03}).
 
 To display our segmentation we can create a contour of it and overlay
-than on the T1 volume (See figure \ref{fig:02}, line 43-47, and figure \ref{fig:04}).
+that on the T1 volume (See figure \ref{fig:04} and listing
+\ref{lst:03}: line 43-47).
 
-Finally using a volume renderer we can visualize the lateral ventricle
-segmentation in 3d.  (See figure \ref{fig:05}).
+Finally using a volume renderer we can visualize the lateral ventricles
+segmentation in 3d (See figure \ref{fig:05}).
 
 \lstinputlisting[language=Python, label=lst:03, caption={A Python script using SimpleITK for the
     multi-modal segmentation of the lateral ventricles.}]{VentricleSegment.py}
@@ -923,7 +923,7 @@ second growing the seeds. This sequence of
 processing was developed in an interactive python session making use
 of SimpleITK's Show method to visualize intermediate results. It was
 then converted into a single script to assist with batch processing
-and parameter exploration (See Listing \ref{lst:05}).
+and parameter exploration (See listing \ref{lst:05}).
 
 \lstinputlisting[language=Python, label=lst:05, caption={Example
     Python script using SimpleITK to segment gold beads with the
