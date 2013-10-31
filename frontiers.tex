@@ -229,6 +229,164 @@ and can take over a minute to load into Python. Also due to the size,
 the large number of configuration options, and the compile time and
 configuration options, precompiled binaries are not available.
 
+\subsection{Other Wrapping}
+ManageITK was developed by Dan Mueller \cite{Mueller2007} to provide
+wrappers for ITK for the .NET languages such as C\#, VB.NET and
+IronPython. It was based on the WrapITK infrastructure, without the
+use of GCC\_XML or SWIG, instead relying on a manual description of
+properties of ITK classes, with the addition of some manually written
+wrapper classes for key data types. Many of the advantages of this
+interface come from the power of .NET including rapid GUI development,
+support for multiple languages, and object browsing in an
+IDE. However, this wrapping approach only works with Microsoft Visual
+Studio on the Windows operating system, and properties and methods for
+a new ITK object need to be manually added and updated.  Also there is
+no testing generated for the wrapped interface.
+
+MathWorks’ MATLAB is a popular commercial platform for research and
+prototyping bio-medical image processing and other numeric computation
+algorithms. There are several libraries available to access ITK
+algorithms inside MATLAB, although they are not providing a direct
+access to the ITK interface,these include MatITK\cite{Chu2006} and
+SimITK\cite{Dickinson2011}.
+
+\section{Design Goals}
+
+SimpleITK is designed to reduce the burden of usage and expand the ITK
+user community by simplifying the complexities that are frequently
+encountered when trying to use ITK. Our goal is to expose the
+algorithms in ITK in a readily available format. Currently a direct
+ITK user must be a sophisticated developer with computer science
+skills to be able to compile and combine ITK algorithms with their own
+C++ code. While applications (Osirix, Paraview, SNAPITK, 3D Slicer)
+are built on top of ITK, internally using ITK data structures and
+algorithms and externally exposing certain filters for image
+manipulation, users of these applications are not direct users of
+ITK. We wish to expand the user base, by making the programming
+interface accessible to non-computer scientists such as domain
+scientists, biomedical engineers and mathematicians.
+
+Interactive scripting and programming environments such as the
+Python’s SciPy environment \cite{Jones2001}, MATLAB (Mathworks, Natick, MA)
+and The R Project for Statistical Computing are popular choices for
+initial prototyping and experimentations. Scripting languages are
+easily accessible to more people than C++.
+
+The first complication a new user of ITK encounters is the lack of a
+binary distribution or compiled software. They must download and
+compile ITK from the source code, which requires development tools
+such as a compilers and CMake which may be new to the user. This
+requirement is a large initial hurdle, and problems are frequently
+encountered as shown by the many help requests on the ITK support
+mailing list.
+
+A second common difficulty is dealing with the ITK’s advanced C++
+templates. ITK uses templates for both an image type’s pixel type and
+the dimension, and the algorithms are templated over the image
+types. The naive usage of these features require the developer to
+determine static types used at compile type.  The code required to
+create a basic program is excessively long and verbose with basic
+programs requiring numerous C++ type definitions.  If multiple pixel
+types or image types need to be handled, then even more bulky and
+complicated code require.
+
+A third problem is complications arising from the ITK pipeline. When
+filters in a pipeline get executed, the number of times they get
+executed, and the implicit buffering occurring between filters can all
+result in performance issues. Common problems include data or
+meta-data being out of date, excessive memory usage due to filters
+buffering output, and unnecessary re-execution of filters. In many
+cases a naively assembled ITK data pipeline can perform worse than
+sequentially executing filters.
+
+
+\subsection {Survey and Architectural Review Board}
+Kitware conducted a survey of the ITK and related computer vision and
+medical imaging communities. A variety of mailing lists were query for
+users to voluntarily fill out a survey including ITK, VTK, R imaging
+group, LinkedIn, etc. Feedback was obtained on commonly used tools,
+applications and requirements for image processing. There were 253
+total participants of which 45 participants had never used ITK and 54
+were uncomfortable using C++.
+
+The survey produced several important conclusions. First, a ready to
+use package greatly increases the likelihood of it being used. Second,
+1 dimensional images are not important with only 4 participants saying
+it would likely to be used. Third, for each pixel type the group was
+asked to rate it’s priority from “Not important” to “Essential”. Every
+pixel had a minimum of 25\% of the participants saying it was at least
+a “High Priority”.
+
+When asked questions about preferred programming languages,
+programming styles, object oriented versus procedural, features of ITK
+used or resource requirement, there was a lack of clear consensus. So
+we concluded that it is important for SimpleITK to be flexible in its
+usage.
+
+To obtain more specific guidance on the design an Advisory Review
+Board (ARB) was assembled consisting of 9 members from academia,
+corporations and government agencies. During the design process pseudo
+code of interfaces were reviewed. The ARB was another important voice
+in the design process, giving opinions on best approaches and guidance
+on prioritizing design philosophies.
+
+\subsection{Goals}
+For a successful project there are certain software engineering goals
+that must be achieved for maximum impact. Firstly, we want to appeal
+to the greatest audience possible. This goal suggests that we must be
+cross platform and support modern desktop operating systems such as
+Microsoft Windows, Apple OS X, and GNU Linux. As observed in our
+survey, a variety of languages should be supported and the framework
+should easily be extendable to other target languages. Additionally,
+to make it easiest of potential users to try the software there should
+be binary downloads available.
+
+Reliability and quality of the software is also of high importance. If
+a potential user downloads the software, and the first thing they try
+does not work, they may never invest the time to resolve the issue. To
+achieve reliability, automatic and manual testing is a must. The
+coverage of the code needs to be high to build confidence in the
+quality and reliability of the software.
+
+Given that we want to expand the ITK community beyond those who are
+comfortable with the current complexities of ITK, certain features
+should be hidden to enable clearer access to the core algorithms
+available in ITK. To address the common complaint about ITK is the
+difficulties using the templates for image and filter algorithms, an
+important objective is to present a template-less abstraction  or
+“typeless layer” to the native ITK interface which implicitly handles
+the ITK templated types. We set the larger goal of not exposing any
+templates in the SimpleITK interface.
+
+Another challenge in our design is to provide a procedural interface
+to the algorithms, while still providing a object oriented for those
+that prefer it. Therefore the interface design needs to be flexible so
+that it can support multiple usage styles.
+
+There are many aspects of ITK that we would like to retain. The
+algorithms still needed to be at the high performance standard that
+ITK currently has as a compiled C++ library. And we still would like
+support for the flexible multi-threaded infrastructure when the
+filtering algorithms are executed. The survey participants placed a
+high priority on the large number of pixel types available in
+ITK. Therefore we must support this wide variety of pixel types
+including color images and vector component images.
+
+The initial mission of ITK included providing a platform for algorithm
+development, SimpleITK goals focus on providing usable algorithms. So
+the building block that ITK provides for algorithm development such an
+image iterator, adaptor, neighborhood algorithms and other utilities
+and interfaces are not designed to be included in the SimpleITK
+interface. This will not exclude SimpleITK from being a platform where
+new algorithms can be developed. For example new methods can be
+developed that are a composite of other algorithms.
+
+Lastly, while ITK is an biomedical segmentation and registration
+library, it explicitly does not contain any visualization. That is a
+user can not view an image with ITK alone. Viewing an image requires
+an external program or library. However for SimpleITK to be part of an
+interactive environment convenient visualization of intermediate
+images is required.
 
 
 %\begin{methods}
