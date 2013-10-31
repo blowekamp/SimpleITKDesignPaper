@@ -420,7 +420,7 @@ closely related.
 
 \subsubsection{Use SWIG for Wrapping}
 One of the fundamental goals of SimpleITK was to provide language
-bindings for different languages such as Python, Java, C#. Due to the
+bindings for different languages such as Python, Java, C\#. Due to the
 large number of language targets, a single unified tool for all
 languages was required for maintainability. The Simplified Wrapper and
 Interface Generator (SWIG) [Beazly2003], is open source and a powerful
@@ -594,7 +594,7 @@ tradeoff. Additionally, we settled for only supporting 2 and 3
 dimensional images. Interest by the users in higher dimensional images
 was limited.
 
-The interface was also customized for C++, Python, R, Java and C# to
+The interface was also customized for C++, Python, R, Java and C\# to
 provide additional syntactic enhancements to make language integration
 as easy as possible. These enhancements include features such as
 operator overloading, advance subscripting, and utilizing weak typing
@@ -864,11 +864,13 @@ Our MRI segmentation Python script begins with import SimpleITK and
 our image display routines showimg and showimg3d (available for
 download): 
 
+\begin{verbatim}
 import SimpleITK as sitk
 from showimg import showimg, showimg3d
 
 Next we read the T1 and T2 brain images and create unsigned char
 version for display. 
+
 
 img_T1 = sitk.ReadImage("Data/nac-brain-atlas-1.0/volumes/A1_grayT1.nrrd")
 img_T2 = sitk.ReadImage("Data/nac-brain-atlas-1.0/volumes/A1_grayT2.nrrd")
@@ -906,7 +908,7 @@ seedimg[seeds[0]] = 1
 seedimg[seeds[1]] = 1
 seedimg = sitk.BinaryDilate(seedimg, 3)
 
-# Display the seed point volume overlaid on the T1 volume
+\# Display the seed point volume overlaid on the T1 volume
 showimg3d( sitk.LabelOverlay(img_T1_255, seedimg), 
 zslices=range(seeds[0][2]-3, seeds[1][2]+3, 3),
        		dpi=15, title="initialseed" )
@@ -935,6 +937,8 @@ And using a volume renderer we can visualize the ventricle
 segmentation in 3d. 
 
 [insert ventricle3.png]
+
+\end{verbatim}
 
 \subsection{Microscopy Segmentation}
 Many modalities of microscopy are acquired at high resolution over a
@@ -979,8 +983,10 @@ SimpleITK code is easy to follow and brief, and executes 16 ITK filter
 to perform its task. Many of those filters are invoked through
 overloaded operators for comparison and arithmetic. 
 
+\begin{verbatim}
 	insert GoldBeadSegmentation.py
 	insert gold.png + gold_seg.png + gold_3d.png
+\end{verbatim}
 
 The resulting segmentation consists of over 9000 segmented gold
 beads. Segmentation is usual just one of many steps in the process of
