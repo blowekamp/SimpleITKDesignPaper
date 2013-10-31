@@ -388,72 +388,462 @@ an external program or library. However for SimpleITK to be part of an
 interactive environment convenient visualization of intermediate
 images is required.
 
+\section{Implementation}
 
-%\begin{methods}
-\section{Material \& Methods}
+We implemented SimpleITK as an interface on top of ITK, built as a C++
+library. This interface is then wrapped for a variety of targeted
+languages. The SimpleITK interface is functionally complete and fully
+encapsulates ITK.  In other words SimpleITK can be used independently
+without any direct calls to ITK. This interface was designed from the
+ground up to be easy to use and intuitive, as well as to take
+advantages of advanced language features and convenience.
 
-Text Text Text Text Text Text  Text Text Text Text Text Text Text Text Text  Text Text Text Text Text Text Text Text Text Text  Text Text Text Text Text Text  Text Text.  \cite{Neuro2013} might want to know about  text text text text Text Text Text Text  Text Text Text Text Text Text  Text Text. \citep{Gene2012} might want to know about  text text text text
-Text Text Text Text Text Text  Text Text Text Text Text Text Text Text Text  Text Text Text Text Text Text Text Text Text Text  Text Text Text Text Text Text  Text Text.  \cite{Neurobot2013} might want to know about  text text text text
+The goals for this project were high, and some of them seemed in
+conflict. The challenges of presenting a procedural interface for the
+highly object oriented and templated ITK library while still
+preserving robust support for multiple image dimensions and pixel
+types was the essence of the problem in designing SimpleITK. Based on
+our motivations and goals a number of choices were made.
 
-\begin{table}[!t]
-\processtable{Maximum size of the Manuscript\label{Tab:01}}
-{\begin{tabular}{lllll}\toprule
- & Abstract max. legth (incl. spaces) & Figures or tables & Manuscript max. length & Final PDF length\\\midrule
-Clinical Case Study & & & &\\
-Clinical Trial & & & &\\
-Hypothesis and Theory & & & &\\
-Methods & 2000 characters  & 15 & 12000 words & 12 pages\\
-Original Research & & & &\\
-Review & & & &\\
-Technology Report & & & &\\
-Focused Review & 2000 characters & 5 & 5000 words & 5 pages\\
-CPC &  1250 characters& 6 & 2500 words & 4 pages\\
-Perspective & 1250 characters & 2 & 3000 words & 3 pages\\
-Mini Review & & & &\\
-Classification & 1250 characters & 10 & 2000 words & 12 pages\\
-Editorial & none & none & 1000 words & 1 page \\
-Book review & & & &\\
-Frontiers Commentary & none & 1 & 1000 words & 1 page\\
-General Commentary & & & &\\
-Field Grand Challenge & & & &\\
-Opinion & none & 1 & 2000 words & 2 pages\\
-Specialty Grand Challenge& & & &\\\botrule
-\end{tabular}}{}
-\end{table}
+\subsection{Decisions}
+\subsubsection{No exposed pipeline}
+One of the first decisions was that we were not going to expose ITK’s
+demand driven pipeline. We decided to hide the pipeline because errors
+in using the pipeline are quite common to new users. Without the
+pipeline, results of operations are immediate so there is no chance
+that an image is out of date or missing information. Users can simply
+call the methods needed to set a filter’s parameters then execute the
+filter.  The overhead required to connect, manage and update filters
+is removed from the interface. Also, with filters executing
+immediately, the object oriented and the procedural interfaces can be
+closely related.
 
-Please note that very large tables (covering several pages) cannot be included in the final PDF for reasons of space. These tables will be published as supplementary material on the online article abstract page at the time of acceptance. The author will notified during the typesetting of the final article if this is the case. A link in the final PDF will direct to the online material.
+\subsubsection{Use SWIG for Wrapping}
+One of the fundamental goals of SimpleITK was to provide language
+bindings for different languages such as Python, Java, C#. Due to the
+large number of language targets, a single unified tool for all
+languages was required for maintainability. The Simplified Wrapper and
+Interface Generator (SWIG) [Beazly2003], is open source and a powerful
+development tool for wrapping C++ with numerous high-level programming
+languages. SWIG has support for over 20 target languages. It is
+capable of parsing basic C++ interfaces and generating glue code to
+connect the target languages to the interface. The result is generally
+a direct mapping of a methods from the target language to an
+associated method in the C++ interface.
 
-\subsection{Original Research Articles, Clinical Trial Articles, and Technology Reports}
+WrapITK uses SWIG to interface ITK with other languages.  But the
+complexity of the templated programming used in ITK, means that SWIG
+cannot directly wrap ITK.  Instead WrapITK requires additional tools
+to explicitly specify the interface of ITK in a format that SWIG can
+understand to wrap certain instantiations of the templated ITK
+interface. SimpleITK’s simplified interface is designed to be directly
+wrappable by SWIG.
 
-For Original Research Articles, Clinical Trial Articles, and Technology Reports the section headings should be those appropriate for your field and the research itself. It is recommended to organize your manuscript in the following sections or their equivalents for your field:
+\subsubsection{Parameter Types}
+ITK uses a variety of array-like types such as arrays, vectors,
+indexes, sizes, points and offsets. These types have template
+parameters such as dimension and value type which makes them dependent
+of the type of the image, resulting in dozens of array-like types in
+the native ITK interface. SWIG has built in support for many C++
+Standard Template Library (STL) objects such as std::vector and
+std::list and provides specialized interfaces for target
+languages. For example SWIG can provide an interface to a std::vector
+in Python similar to its own list or tuple type along with implicit
+conversions. This feature greatly improves the interaction in the
+target language, giving the interface a native feel. Because of the
+goal to create a template-less layer free from compile time
+parameters, SimpleITK uses std::vectors for array-like parameters for
+its interface. However, for the targeted scripting language it may
+appear as native arrays.
 
-\begin{itemize}
-%for bulleted list, use itemize
-\item Introduction: Succinct, with no subheadings.
-\item Materials and Methods: This section may be divided by subheadings. This section should contain sufficient detail so that when read in conjunction with cited references, all procedures can be repeated.
-\item Results: This section may be divided by subheadings. Footnotes should not be used and have to be transferred into the main text.
-\item Discussion: This section may be divided by subheadings. Discussions should cover the key findings of the study: discuss any prior art related to the subject so to place the novelty of the discovery in the appropriate context; discuss the potential short-comings and limitations on their interpretations; discuss their integration into the current understanding of the problem and how this advances the current views; speculate on the future direction of the research and freely postulate theories that could be tested in the future.
-\end{itemize}
+\subsubsection{Hide Smart Pointers}
+Pointers and explicit memory management are elements of C++ that
+preclude it from being considered a high-level language such as
+scripting languages like Python. The smart pointer design pattern is a
+combination of implicit reference counting for objects with an
+interface of a standard pointer so that objects can be automatically
+deleted when no longer referenced, reducing the burden of explicit
+memory management. While smart pointers are used in ITK, they are not
+simple enough for SimpleITK as they may introduce a new concept in
+target languages. Many languages provide a direct object type, not a
+separate pointer type that refers to the object. The burden of a
+direct approach in C++ is that implicit deep copies of objects occur
+during assignments and passing arguments by value. We decided that
+SimpleITK would provide direct image, filter and transformation
+objects but not provide the undue burden of implicit copying.
 
-Please note that the Material and Methods section can be placed in any of the following ways: before Results, before Discussion or after Discussion.
+\subsubsection{Template-less Layer}
+The template-less or “typeless” layer concept’s goal is to hide ITK’s
+template parameters from the user. A common suggestion was to simply
+consider all images as 32-bit or 64-bit real numbers. However, this
+approach can cause unacceptable memory use and performance
+penalties. Consider starting with an image that is an 8-bit and 4
+gigabytes.  Converting to a 64-bit type would use eight times the
+memory now requiring 32 gigabytes of memory for its
+representation. This monolithic choice changes the nature of working
+with an image from one that can be done on a laptop to one that
+requires a large server. Additionally, the users surveyed demanded the
+flexibility to use a variety of pixel types.
 
-\subsection{Clinical Case Studies}
+Therefore the template-less layer concept requires that SimpleITK
+images all have the same external type and interface, unlike ITK. The
+details of dealing with the different ITK template parameters is
+hidden so that the user can generically manipulate any image. An
+image’s pixel type and dimension are handled by SimpleITK internally
+and not directly exposed to the user, unlike ITK which requires the
+user to explicitly determine them at compile-time. At runtime a
+PixelIDValue, in the form of an integer and enumerated type is used to
+represent a pixel type, which along with the image dimension are
+intrinsic run-time attributes of the SimpleITK image.
 
-For Clinical Case Studies the following sections are mandatory:
+\subsubsection{Facade Interfaces}
+The facade design pattern is a software design pattern to present the
+user with an simplified interface to a larger body of code
+[Gamma1995]. This approach is how SimpleITK encapsulates ITK filters
+and data objects, where  the body of code encapsulated is the set of
+template parameters for a class. Our facades internally use ITK
+objects and call ITK methods, so there is very little additional
+code. The facade code provides a template-less layer to instantiate
+and dispatch to the correct templated ITK code. Additional code is
+used to make the objects of the facade behave natively instead of
+requiring smart pointers and converting between the templated ITK
+array-like types and STL objects.
 
-\begin{itemize}
-%for bulleted list, use itemize
-\item Introduction: Include symptoms at presentation, physical exams and lab results.
-\item Background: This section may be divided by subheadings. Include history and review of similar cases.
-\item Results: This section may be divided by subheadings. Include diagnosis and treatment.
-\item Concluding Remarks
-\end{itemize}
+\subsection{The Design of the SimpleITK Image}
+The image class is at the heart of SimpleITK. It is the most commonly
+used class and has been specially designed to provide a natural and
+intuitive user interface across multiple target languages. We followed
+our principles for intuitive interface driven design by writing
+numerous example code blocks and discussing tradeoffs with the ARB.
 
-%\end{methods}
+From an interface perspective, the handling of the life of an object,
+i.e. how the object is constructed, copy and destroyed, is a key
+aspect of developing an intuitive interface. Because we chose not to
+expose smart pointers, we are use a completely different approach from
+ITK’s New method. Our approach is simple and translates to other
+languages seamlessly. We simply directly expose the image class’s
+constructors and destructor without the restrictions applied in
+ITK. The reasons ITK uses the New factory method include: adding
+flexibility to override a class’ implementation and enforcing smart
+pointers use by preventing stack based allocation. Our approach to the
+SimpleITK interface does not allow our classes to be directly
+overridden but still allows ITK class overrides to occur
+internally. As we encourage the direct use of our image class, the
+smart pointer motivation is mute as well. An image is able to be
+default constructed, as an image of size zero. An image of any
+dimension or pixel type is considered to be empty if its size is
+zero. The common constructor methods take parameters for the size of
+the image along with the pixel type and support the option for the
+number of components per pixel. The dimension of the image is
+determined by the number of components used for size. How images are
+copied is closely related to their constructors, but the relationship
+between the SimpleITK interface and ITK objects needs to be described
+first.
+
+The SimpleITK image interface presented, utilizes the facade design
+pattern in conjunction with the private implementation, pimpl pattern
+[Sutter1999]. It is a facade in that it provides a unified interface
+for multiple ITK class and template parameters. The single SimpleITK
+image class provides an interface to ITK’s Image, VectorImage, and
+LabelMap classes and supports  multiple dimensions and pixel
+types. However, the SimpleITK Image class is not polymorphic, i.e. it
+is not a virtual base class and does not contain virtual
+methods. Instead it relies on an internal pointer to a private class
+in the pimpl pattern to provide a unified polymorphic interface to
+ITK’s image class. The pimpl image has an abstract base class for the
+unified interface with templated derived classes to implement the
+specifics. This pimpl image fully encapsulate ITK’s templates and
+instantiates all the ITK image classes. A call from the SimpleITK
+interface to an ITK image is quite efficient and direct despite the
+complexity of the patterns used. A call to the SimpleITK image’s
+method, calls the same method in the Pimpl Image through the
+polymorphic interface, which then calls the ITK method. This dispatch
+method is direct and free from any conditionals. The SimpleITK image
+only contains a pointer to the pimpl image which only contains a smart
+pointer to ITK image. This implementation provides an efficient
+interface with low overhead.
+
+Our interface also allows for direct copying and assignment of the
+image class in an optimized manner. From a user perspective, the
+availability of optimized copy methods is generally all that needs to
+be known. However, we have optimized these methods by using a form of
+lazy evaluation through a copy-on-write (COW)  policy. This policy is
+a key component that allows for an efficient implementation while
+removing pointers from the interface. Ironically, COW is implemented
+by using ITK’s smart pointers. When a copy of a SimpleITK image
+occurs, a new ITK smart pointer to the image is create and
+stored. This new smart pointer increases the reference count contained
+of the ITK image. When there is a write request to the SimpleITK
+image, the reference count is checked; if it is not 1, then a deep
+copy is performed of the bulk image data. This approach enables the
+SimpleITK image to be passed by value without the overhead of
+implicitly copying the bulk image data.
+
+Our user survey and ARB discussions were inconclusive in determining a
+limited set of important pixel types to implement. As adding more
+image or pixel types does not increase the number of methods in the
+SimpleITK interface, we do not limit the types enabled. Currently we
+have up to 26 different pixel types available including scalars,
+multi-component vectors, complex as well as label maps implemented
+with the run length encoded LabelMap classes. Fully implementing these
+type does not have an adverse effect on usability or run-time. It does
+however increase the demands on the system requirements for compiling
+the library. As the goals for SimpleITK focus more on usability of the
+interface then ease of building, it was determined to be a reasonable
+tradeoff. Additionally, we settled for only supporting 2 and 3
+dimensional images. Interest by the users in higher dimensional images
+was limited.
+
+The interface was also customized for C++, Python, R, Java and C# to
+provide additional syntactic enhancements to make language integration
+as easy as possible. These enhancements include features such as
+operator overloading, advance subscripting, and utilizing weak typing
+of return values in many scripting languages.
+
+The resulting image class provides a simple and easy to use interface
+that fully encapsulates the complexities of ITK. Among the things that
+are hidden include templates for both the image dimension and pixel
+type as well as multiple image classes. Details such as
+smart-pointers, memory management and copy semantics are also removed
+and replace with a straightforward C++ interface. This standard
+interface can be directly wrapped by SWIG, thus providing a
+conventional interface for different target languages.
+
+\subsection{The Design of the SimpleITK Filters}
+Among the objectives which drove the filter interface design of
+SimpleITK included removing the dependency on the image type at
+compile time, the removal of ITK’s data driven pipeline as well as
+providing a flexible interface which has an object oriented and
+procedural interface. With the template-less image class designed and
+the decision to use STL’s std::vector as parameters whose length is
+dependent on the image dimension, the interface was rather straight
+forward. Determining which type to use for filter method parameters
+was a difficulty when its the same type as the image’s pixel
+type. Generically using the double type resolved this issue. The
+double is a superset of all scalar pixel types except 64-bit integers,
+and for vector pixel types the scalar value is replicated for all
+components. Here is a prototypical example interface:
+
+insert filter.h
+
+In ITK, the pipeline needs to be explicitly updated before results can
+be examined. This update initiates the examination of the dependencies
+in the pipeline to determine the necessary filters to execute. After
+the Update method of a filter is called the results in the output are
+valid and can now be examined. Without the pipeline, a filter is
+executed immediately, so the method name Execute was chosen to
+illustrate the difference. Filters which have secondary results, such
+as a number of iterations or a measurement of error are problematic
+for the procedural interface as functions naturally only return a
+single value. The solution was to add “measurements” only to the
+filter classes. An alternative approach, to make these available
+through the procedural interface was  have them as arguments to the
+procedural methods. However doing so would result in too many
+arguments, and passing by reference or pointer is not portable across
+differing languages.
+
+Defining the behavior of a filter is more complicated than specifying
+the desired interface for the template-less filter. For each filter
+decisions must be made about the input types supported as well as the
+image type produced. The goal is to have filters support as many image
+types as possible. Even when the ITK filter does not directly support
+vector images, the SimpleITK infrastructure can execute the ITK filter
+on each component independently. For determining the output image type
+there are a couple general policies that occur. The first and most
+common is defining the output image type the same as the input. This
+is sensible for many filters including mathematical morphology, image
+grid manipulations, and label image manipulations. For other filters
+having a fixed output type is sensible. For example filters which
+output a mask such as thresholding, always output a unsigned 8-bit
+integer, while distance field filters produce 32-bit floating point
+numbers. Consideration must include limiting the number of
+instantiated filters of one type to a reasonable number, to prevent
+excessive compilation and library size from excessive permutation, so
+in general there is no selection of the output type.
+
+Those filters which take two image as input required special
+consideration for how to handle the multiple types. In ITK, filters
+that are binary “functors” such as the addition and subtraction
+operators, have 3 template parameters corresponding the two inputs and
+the single output. This approach makes ITK very flexible by allowing
+conversion to occur simultaneously with the operation. Languages have
+different type promotions schemes, and certain overflow and
+conversions are explicitly undefined in C++. Therefore we decided that
+most of the binary filters require the inputs to both be of the same
+type as well as the resulting output. So we do not do any implicit
+conversion or promotion, thereby requiring the user to explicitly cast
+the inputs to be the same type. SimpleITK does have the ability for
+filters to accept multiple images of differing types and to use the
+correct ITK filter templates based on these input types. These filters
+are called “dual” image filters in SimpleITK. They have been used
+sparingly due to size constraints when the computation validity of
+multiple types is not in question.  The types of filters where this
+feature is used include filters with masking and overlays. The group
+of filters which allow the user to select the output type such as
+casting, camping, and resample also use the “dual” dispatch
+infrastructure.
+
+By choosing to remove ITK’s pipeline architecture from SimpleITK there
+are numerous simplifications that we have taken advantage in our
+design. Among the ITK features SimpleITK omits are the advanced
+details of memory management occurring in the pipeline such as
+releasing data, and running filters “in place”. They are not relevant,
+since SimpleITK has an immediate execution model that lacks pipeline
+buffering. ITK’s interface for the ProcessObject, which is the basis
+for all filters, consists of over 40 public methods for manipulating
+the pipeline and managing the inputs and outputs. All these methods
+are irrelevant for SimpleITK’s Execute method approach. Omitting them
+simplifies the interface for each filter class.  Among the features
+still relevant is the monitoring of progress and events; these
+features are scheduled for the next release of SimpleITK, version 0.8.
+
+\subsection{Implementation Details}
+The design of the interface was not done in isolation from the
+implementation. Extreme software development methodologies were use to
+continuously test and regularly integrate features into a stable
+version.  The goals and the design of the interface presented immense
+software engineering problems that had not been addressed before with
+ITK. Initially there were doubts that maintainable code and
+infrastructure could be developed to create a template-less layer for
+a significant part of ITK’s filters without unmaintainable, manually
+created code. Our resulting implementation uses advanced C++ template
+meta-programming to perform compile-time execution of code generation,
+as well as traditional code generation based on the description of
+filters. The details in this section are completely hidden from a user
+of SimpleITK, and are relevant to those examining the internals of
+SimpleITK or those who wish to learn the novel techniques used for
+similar projects.
+
+\subsubsection{Overview}
+SimpleITK is implemented with more than just static code. It is a
+complex sequence of code generation and compilation to produce the C++
+interface, followed by wrapping with SWIG for the target
+languages. The manually written common code of SimpleITK consists of
+the meta-programing infrastructure for the template-less layer and the
+core data structures such as the image and the transform
+classes. Also, a few of the filters and the reading, writing and image
+display interfaces are written by hand. As of SimpleITK 0.7rc1, the
+SimpleITK C++ interface for 245 image filters is automatically
+generated from manually written descriptions.
+
+        see figure//
+
+\subsubsection{Code Generation}
+After experimenting and iteratively improving manually written filter
+interfaces, it was immediately apparent that a solely manually written
+interface would take excessive time to develop, lead to an
+inconsistent interface, and be unmaintainable. Due to the requirement
+of maintaining a consistent interface among a large number of filters,
+automatic source code generation became the natural choice. Code
+generation allows the developers to focus on writing the generator and
+the description at a higher level than the immediate interface.
+
+Each generated filter in SimpleITK is described by a JavaScript Object
+Notation (JSON) file. The JSON file structure is a lightweight data
+format popularized by JavaScript programming for the web, which is
+easy for both humans and computer software to read and write. The JSON
+description contains the essence of an ITK filter. A filter
+description contains the expected named fields [WHAT FIELDS?] with
+values, as well as more generic fields which can contain C++ code to
+be inserted into the template. The information needed to specify the
+template parameters of a filter based on the input(s) consists of the
+number of inputs, the type of pixels supported as well as how it
+[WHAT?] gets mapped to the output type. Additionally, there is the
+“member” sections which contains the description for each filter
+parameter so that it can be store in the SimpleITK facade and
+translated into the typed ITK filter. There is also an optional
+section to describe “measurements”, and how to update the member
+variable from the results of the ITK filter.
+
+For normal image filters previously mentioned portion of the JSON
+description can generally be written in just a few moments from a
+similar example. The time consuming part in writing a JSON description
+is the “tests” section. This section contains input image file names,
+the values of parameters, and either a hash of the expected output or
+a baseline image to compare a test against. By including this section
+we are able to generate tests for each language to verify usability
+and functionality of the filter with different image types. Automatic
+testing is critical to developing a robust interface that is proven
+and reliable.
+
+The generator of the source code is a text based program, which
+processes a set of text inputs and produces source code. Lua is a
+powerful, portable, fast, and lightweight scripting languages
+[Ierusalimschy2006]. We chose it as the language for the source code
+generator script because its small size makes it easily included as
+part of the SimpleITK source and compiled during the build
+process. The generator script is derived with the Lua “Text Template
+Expand” example [REF], combined with an publically available JSON
+parser[REF]. This system uses template files which contain and inlined
+Lua expressions all of which are evaluated into strings. The scope of
+the Lua expressions include variables from the current scope in the
+JSON description file. There are template files for filters of types
+such as “ImageSources”, “BinaryFunctorFilters”, and
+“DualImageFilters”.
+
+\subsubsection{Template Meta-program and Typelists}
+The crux of the problem for the template-less layer is the ability to
+map the runtime pixel type information, PixelIDValue, available from
+SimpleITK’s image to the compile-time template parameters in ITK and
+visa versa. Template meta-programming in C++ is the use of templates
+to perform compile-time execution to generate code. SimpleITK uses a
+concept called “Typelists” list to operate on list of types, PixelIDs,
+which represent the types of pixels. Specifically these lists have
+compile-time operations to append, merge, intersect, search, traverse
+and perform permutations of selections from two lists
+[Alexandrescu2001]. The runtime id of a pixel type, PixelIDValue, is
+the index in the global InstantiatedPixelIDTypeList type, which is a
+Typelist of all the available pixel types. There are a variety of
+groups of PixelIDs declared as Typelists such as integer, real and
+vector. The JSON description of a filter describes the valid input
+pixel types by performing meta-programming operations on these
+Typelists.
+
+The compile-time mapping of the run-time PixelIDValue to an
+instantiated function with the image as a template parameter is more
+problematic. The compile-time mapping of the PixelID to the scalar
+PixelIDValue can and must be done on all instantiated types. On the
+other hand the templated functions can only be instantiated with the
+parameters that are specified via Typelists. Otherwise the code may
+not be valid.
+
+The mapping of the run-time PixelIDValue to an instantiated member
+function is done with an abstraction called a
+MemberFunctionFactory. This factory has a method which maps a
+PixelIDValue and image dimension to a member function pointer of an
+instantiated member function over the associated ITK image
+type(s). These functions are registered into the factory by passing a
+PixelID Typelist and the dimension. Additionally the factory has a
+templated object which knows how to get the address of  the member
+function, enabling the compile-time traversal of the Typelist to
+instantiate the member function.  With the member functions stored in
+the factory, they are indexable by the PixelIDValue at run-time. This
+MemberFunctionFactory is the heart of the dispatch system used to
+implement SimpleITK’s templateless layer and is an important software
+engineering innovation for dispatching run-time mappings to ITK types.
+
+\subsubsection{Automated Documentation}
+Without documentation to accompany filters and algorithms, the
+interface of SimpleITK would be unusable. Duplicating the effort to
+describe each algorithm and parameters with what has already been done
+in ITK would be a foolish task. Doxygen is the de facto standard tool
+for generating reference manuals of a programming interface from
+annotated source code [REF]. It is used as the source code annotation
+throughout ITK and SimpleITK. For all the manually written SimpleITK
+infrastructure and facade interfaces the annotations are written in
+the source code. Automated utilities have been developed to insert
+documentation strings into the JSON filter description files. These
+documentation fields are then incorporated into the generated source
+code as well as used for wrapped target language’s online
+documentation. Currently the ITK documentation sometimes contains C++
+implementation details or other features only available in native ITK.
+In the future ITK’s Doxygen annotation may be further marked up to
+note the relevance of different sections so that it can be better
+integrated into SimpleITK and other projects.
 
 
 
-\section{Results}
+\section{Examples}
 
 Frontiers requires figures to be submitted individually, in the same order as they are referred to in the manuscript. Figures will then be automatically embedded at the bottom of the submitted manuscript. Kindly ensure that each table and figure is mentioned in the text and in numerical order. Permission must be obtained for use of copyrighted material from other sources (including the web). Please note that it is compulsory to follow figure instructions. Figures which are not according to the guidelines will cause substantial delay during the production process.
 
