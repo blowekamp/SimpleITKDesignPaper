@@ -719,15 +719,13 @@ similar projects.
 SimpleITK is implemented with more than just static code. It is a
 complex sequence of code generation and compilation to produce the C++
 interface, followed by wrapping with SWIG for the target
-languages. The manually written common code of SimpleITK consists of
+languages (See Figure ~\ref{fig:01}). The manually written common code of SimpleITK consists of
 the meta-programing infrastructure for the template-less layer and the
 core data structures such as the image and the transform
 classes. Also, a few of the filters and the reading, writing and image
 display interfaces are written by hand. As of SimpleITK 0.7rc1, the
 SimpleITK C++ interface for 245 image filters is automatically
 generated from manually written descriptions.
-
-        see figure//
 
 \subsubsection{Code Generation}
 After experimenting and iteratively improving manually written filter
@@ -1161,7 +1159,7 @@ Medicine's intramural research program.
 \begin{center}
 \includegraphics[width=8.5cm]{images/fig1_dataflow}
 \end{center}
-\label{fig:1}
+
  \textbf{\refstepcounter{figure}\label{fig:01} Figure \arabic{figure}.}{ Data Flow }
 \end{figure}
 
