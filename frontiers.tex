@@ -1061,52 +1061,51 @@ applications.  They can dramatically reduce the implementation time and
 increase the number of algorithms that can be made available.
 
 \section{Discussion}
-The SimpleITK interface and wrapping for additional languages is a new
-and easy way to use ITK's algorithms in a readily usable
-environment. A number of features of ITK are hidden and the bulk of
-the interface and usage has been simplified. Currently about 250
-algorithms are available through SimpleITK to be interactively
-explored in a number of scripting environments We have develop an
-effective tool to be used in interactive scripting and prototyping
-environments.
+The SimpleITK interface with wrapping for additional languages is a new
+and easy way to use ITK's image processing algorithms that will 
+make these algorithms available to a wider audience of domain scientists.
+A number of features of ITK are hidden and the bulk of
+the interface has been simplified. Currently approximately 250
+algorithms are available through SimpleITK for interactive
+exploration in a number of scripting and prototyping environments. 
 
-SimpleITK has already had several releases during on going
+SimpleITK has already gone through several releases during 
 development. The most current release available is 0.7.0rc1. As of
 this writing there have been over 7,000 binary downloads of SimpleITK
-on SourceForge. This does not include those who have built SimpleITK
-from the source code repository, or are using it from an integrated
+on SourceForge. This number does not include those who have built SimpleITK
+from the source code repository or are using it from an integrated
 application. The SimpleITK official website (http://www.simpleitk.org)
 contains more information about how to get started using SimpleITK.
 
 \subsection{Future Work}
 While the foundations of ITK have been integrated into the SimpleITK
-interface such as images, transforms and interpolators as well as the
+interface for classes such as images, transforms and interpolators and the
 infrastructure for source code generation for filter has been
 implemented, much of the work for ITK's registration framework is yet
-to be done. Some ITK registration methods are ITK filters can easily
+to be done. Some ITK registration methods are ITK filters and can easily
 be integrated as part of the current framework. The modular
-registration framework in ITK version 3 and the lastest version 4
-present new problems which require unique design decisions.
+registration framework in ITK version 3 and the lastest version, v4,
+present new problems which require novel design solutions.
 
-Additionally, there are features in ITK that still need to be added to
-the SimpleITK interface such and progress reporting and call-back
-methods. SimpleITK currently contains over 250 image filters from
-ITK. We are always looking to hear back from SimpleITK users about
-what additional ITK filters are need to prioritize the remaining
-work. Many of the remaining fitler are not commonly used. So when the
-SimpleITK interface is tested, bugs in ITK may be encountered or other
-inconsistency discovered in ITK's interface. These issues must be
-addressed and fix in ITK, and slow down the development of SimpleITK.
+Additionally, there are features in ITK that still need to be encorporated
+in to the SimpleITK interface such as progress reporting and call-back
+methods. While SimpleITK currently contains over 250 image filters,
+we are always looking for feedback from our user community for
+what additional ITK filters should be priorites in future
+work. Many of the unencorporated ITK filters are not commonly used. So when the
+SimpleITK interface is tested, bugs in ITK may arise or other
+inconsistencies may be discovered in ITK's interface. These issues must be
+addressed and fixed in ITK and slow the development of SimpleITK.
 
 ITK is a very large toolkits consisting of millions of lines of
 code. The SimpleITK interface is highly customized and not designed to
-expose all of ITK. The development and design of SimpleITK has been
+expose all of ITK. The design goals of SimpleITK have been
 for a robust, reliable, and elegant interface to ITK. To that end we
 have focused on the template-less layer to the image class and image
 filters.  There are many additional data structures that could be
-include in the interface including histograms, and quad-edge
+added to the interface including histograms and quad-edge
 meshes. However, we wish the presented interface to be the best
-possible to that end some of these areas of ITK may not be include to
+possible. To that end some portions of ITK may be avoided to
 maintain a high standard until there is broad ITK community support.
 
 The number of the languages which SimpleITK is wrapped for is large
@@ -1115,8 +1114,8 @@ maintaining unique features and “syntactic sugar” such as advanced
 subscripting and native buffer interface for all languages is too
 large of a task. We seek the on going support of the ITK community to
 support these features and languages. Specifically, in the near future
-we hope to add native JAVA array integrations with SimpleITK image
-buffers, and improve SWIG's wrapping for the R language to handle
+we hope to add native Java array integrations with SimpleITK image
+buffers and improve SWIG's wrapping for the R language to handle
 enumeration types correctly.
 
 \subsection{Conclusion}
