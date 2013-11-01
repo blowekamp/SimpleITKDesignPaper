@@ -74,7 +74,7 @@ $^{4}$Mayo Graduate School of Medicine, Biomedical Engineering Department, Roche
 \section{}
 SimpleITK is a new interface to the Insight Segmentation and
 Registration Toolkit (ITK) designed to facilitate rapid prototyping
-and educational activities, through access via additional programming
+and scientific activities, via high level programming
 languages. ITK is a templated C++ library of image processing
 algorithms and frameworks for biomedical and other applications, and
 it was designed to be generic, flexible and extensible. Initially, ITK
@@ -86,12 +86,12 @@ procedural methods, hides ITK's demand driven pipeline, and provides a
 template-less layer.   Also SimpleITK provides practical conveniences
 such as binary distribution packages and overloaded operators. Our
 user-friendly design goals dictated a departure from the direct
-interface wrapping approach WrapITK has taken, towards a new facade
+interface wrapping approach of WrapITK, towards a new facade
 class structure that only exposes the required functionality, hiding
 ITK's extensive template use. Internally SimpleITK utilizes a manual
 description of each filter with code-generation and advanced C++
 meta-programming to provide the higher-level interface, bringing the
-capabilities of ITK to a larger audience. SimpleITK is licensed as
+capabilities of ITK to a wider audience. SimpleITK is licensed as
 open source software under the Apache License Version 2.0 and more information
 about downloading it can be found at http://www.simpleitk.org.
 
@@ -103,39 +103,39 @@ about downloading it can be found at http://www.simpleitk.org.
 \section{Introduction}
 The proper practice of the scientific method requires the systematic
 verification of reproducibility of published reports
-\cite{Popper1934}. Ideally, this verification must be performed by
-independent observers in order for it to be trustable \cite{Popper1968}. In
+\cite{Popper1934}. Ideally, this verification should be performed by
+independent observers for it to be trustable \cite{Popper1968}. In
 the context of computational science, the reports of scientific
-research, must include the means and the complete details required to
-enable independent groups to fully replicate the results that are
-being published. In particular, they should include: data, reports,
+research must include the means and the complete details required to
+enable independent groups to fully replicate the published results. 
+In particular, they should include: data, reports,
 list of experimental parameters, and software.
 
 Open source software provides public implementations of state of the
 art algorithms, that facilitate the accelerated advancement of a
-field, through a more efficient research lifecycle, and through more
+field, through a more efficient research lifecycle and more
 practical education. The National Library of Medicine's Insight
 Segmentation and Registration Toolkit (ITK) is a leading open source
 software for biomedical image analysis. Since 1999, it has been used
-in fields as varied as brain registration for neuroscience, microscopy
+in fields as diverse as brain registration for neuroscience, microscopy
 image analysis, radiation treatment planning, image segmentation for
 brain tumors, and processing of electron microscopy, as well as
 non-medical applications such as satellite imagery and industrial
 inspection.
 
-Our fundamental goal in developing SimpleITK was to grow the user base
+Our fundamental goal in developing SimpleITK was to grow the user community
 of ITK.  Whereas direct use of the ITK programming interface requires
 expertise in templated C++, SimpleITK was designed to be accessible
-from a variety of languages.  Furthermore SimpleITK has a
-straightforward interface that does not require knowledge of the
+from a variety of higher level languages.  Furthermore SimpleITK has a
+straightforward interface that requires no knowledge of the
 intricacies of ITK's templated types. By lowering the bar to access
-ITK's portfolio of image processing algorithms we hope to further the
-goals of open source and open science.
+ITK's portfolio of image processing algorithms we hope to reach the domain
+scientist and to further the goals of open source and open science.
 
 \subsection{The Insight Segmentation and Registration Toolkit}
 
 The Insight Segmentation and Registration Toolkit (ITK) was originally
-conceived as public software tools for the analysis of the Visible
+conceived as open software tools for the analysis of the Visible
 Human Project by the National Library of Medicine (NLM) with
 partnership from six other institutes at the National Institutes of
 Health (NIH). During the initial development the mission of ITK was
@@ -174,9 +174,9 @@ platform to allow for research, experimentation and development of
 algorithms. To that end one of the notable implementation details in
 ITK is the extensive use of C++ templates. The ITK image class is a
 templated structure over both the pixel type as well as the image
-dimension. The choice pervades all areas of the toolkit. Image filters
-must be templated over the image type. Also the structures and objects
-used with the image classes are also templated. These data structures
+dimension. This design choice pervades all areas of the toolkit. Image filters
+must be templated over the image type. Also the data structures and objects
+used with the image classes are templated. These structures
 include image iterators, points, and indices. The results of this
 interface design can be seen code listing \ref{lst:01}, taken from the
 ITK Software Guide \cite{Ibanez2005}.
@@ -185,29 +185,29 @@ ITK Software Guide \cite{Ibanez2005}.
     typical ITK example with templates, which reads an image, runs a
     Gaussian convolution then writes it back out to disk.}]{itkGaussianExample.cxx}
 
-Notably missing from the design goals of ITK are usability and ease of
+Notably missing from the design goals of ITK were usability and ease of
 accessibility.
 
 
 \subsection{WrapITK}
 
 The native wrapping of ITK is performed with a project called WrapITK
-\cite{Lehmann2006}, which was integrated with version 4 into the main
+\cite{Lehmann2006}, which was integrated with version 4 into the main source
 repository. Its goal was to be a direct mapping of ITK's interface for
 languages such as Python, Java and Tcl. As a direct mapping it
-attempts to expose all of ITK's functionality include the pipeline,
-template parameters of data objects and filters along with ITK's usage
+attempts to expose all of ITK's functionality including the pipeline,
+template parameters of data objects and filters along with ITK's use
 of pointers to objects. WrapITK provides interfaces to many basic ITK
 objects such the basic array, index vector, point and matrix
 classes. Additionally interfaces to the core data object types such as
 images and transforms are provided along with iterators and other
-utility classes. Most of these type have template parameters for both
-dimension and value type. These available types in WrapITK make it
+utility classes. Most of these types have template parameters for both
+dimension and value type. The available types in WrapITK make it
 possible to use most of ITK's filters and many of ITK's modular
 frameworks, such as registration, with the native ITK class to specify
 parameters.
 
-WrapITK's implementation was a evolution of the initial ITK wrapping
+WrapITK's implementation was an evolution of the initial ITK wrapping
 system which used CABLE \cite{Lehmann2006}. There are four components to
 this system CMake \cite{Martin2003}, GCC\_XML (http://www.gccxml.org), pygccxml, and SWIG
 \cite{Beazley2003}. The process is driven by CMake which runs GCC\_XML to
@@ -224,14 +224,14 @@ target language the correct template parameters must be provided as
 part of the of the object to be constructed. While this approach is
 very much in the style of ITK, many of the targeted languages are
 scripted and typeless, making this extra verbosity unnatural and
-cumbersome.  This method also has a very large impact on the size of
+cumbersome.  This approach also has a very large impact on the size of
 the WrapITK library and the number of symbols in the library. For
 every ITK class, with every combination of template parameter, for
 each method a wrapper method is needed, which introduces multiple
-symbols in the library that must get loaded into the target language
-namespace. With most of the pixel types instantiated the WrapITK
+symbols in the library that must be loaded into the target language
+namespace. With most of the pixel types instantiated, the WrapITK
 library can be over a gigabyte, can contain nearly 3 million symbols,
-and can take over a minute to load into Python. Also due to the size,
+and can take over a minute to load into Python. Also because of the size,
 the large number of configuration options, and the compile-time and
 configuration options, precompiled binaries are not available.
 
