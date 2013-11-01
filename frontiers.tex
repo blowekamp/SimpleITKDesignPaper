@@ -872,7 +872,7 @@ download).  Next we read the T1 and T2 brain images and create unsigned char
 version for displays (See listing \ref{lst:03}: lines 5-10).
 
 Taking advantage of SimpleITK's Python array slicing, extracting
-coronal slices from the MRI volumes is simple (See figure \ref{fig:02}
+axial slices from the MRI volumes is simple (See figure \ref{fig:02}
 and listing \ref{lst:03}: lines 13-14). Then from the original T1 and T2 volumes we
 create a vector volume using SimpleITK's Compose function (See listing \ref{lst:03}: line 18).
 
@@ -932,8 +932,8 @@ and parameter exploration.
     watersheds algorithm.}]{GoldBeadsSegmentation.py}
 
 The method first uses thresholding to identify the high intensity gold,
-then uses mathematical morphology separate the beads of at least 15 pixels
-(75nm) in diameter. Next, each isolated part is given a unique
+then uses mathematical morphology separate the beads of at least 13 pixels
+(65nm) in diameter. Next, each isolated part is given a unique
 identifier using the connected components algorithm. The watershed from
 markers algorithm available in ITK \cite{Beare2006}, is
 a multi-label greedy region growing subject to the penalty of the

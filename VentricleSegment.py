@@ -5,11 +5,11 @@ from showimg import showimg, showimg3d
 img_T1 = sitk.ReadImage("Data/nac-brain-atlas-1.0/volumes/A1_grayT1.nrrd")
 img_T2 = sitk.ReadImage("Data/nac-brain-atlas-1.0/volumes/A1_grayT2.nrrd")
 
-# Convert the volumes to 8-bit greyscale
+# Convert the volumes to 8-bit grayscale
 img_T1_255 = sitk.Cast(sitk.RescaleIntensity(img_T1), sitk.sitkUInt8)
 img_T2_255 = sitk.Cast(sitk.RescaleIntensity(img_T2), sitk.sitkUInt8)
 
-# Extract and display a coronal slice from each volume
+# Extract and display an axial slice from each volume
 yslice_T1 = img_T1_255[:,115,:]
 yslice_T2 = img_T2_255[:,115,:]
 showimg(yslice_T1, dpi=30, title="t1image")
