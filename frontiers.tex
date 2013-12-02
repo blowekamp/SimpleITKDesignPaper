@@ -161,7 +161,7 @@ for multi-resolution methods. ITK also contains data-structures for
 spatial object, histograms, finite element meshes, quad-edge meshes,
 neural networks, images and narrow band level-sets. There are a large
 number of third party libraries that are supported and used for input
-and output. Additionally there are a numerous image filters algorithms
+and output. Additionally there are numerous image filters algorithms
 available including mathematical morphology, smoothing, deconvolution,
 distance maps, fast marching, image fusion, image statistics,
 geometric filters, and image sources among many others. ITK contains a
@@ -236,9 +236,9 @@ the large number of configuration options, and the compile-time and
 configuration options, precompiled binaries are not available.
 
 \subsection{Other Wrapping}
-ManageITK was developed \cite{Mueller2007} to provide
+ManageITK was developed to provide
 wrappers for ITK for the .NET languages such as C\#, VB.NET and
-IronPython. It was based on the WrapITK infrastructure, without the
+IronPython \cite{Mueller2007}. It was based on the WrapITK infrastructure, without the
 use of GCC\_XML or SWIG, instead relying on a manual description of
 properties of ITK classes, with the addition of some manually written
 wrapper classes for key data types. Many of the advantages of this
@@ -451,14 +451,14 @@ indexes, sizes, points and offsets. These types have template
 parameters such as dimension and value type which makes them dependent
 on the type of the image, resulting in dozens of array-like types in
 the native ITK interface. SWIG has built in support for many C++
-Standard Template Library (STL) objects such as std::vector and
-std::list and provides specialized interfaces for target
-languages. For example SWIG can provide an interface to a std::vector
+Standard Template Library (STL) objects such as \textit{std::vector} and
+\textit{std::list} and provides specialized interfaces for target
+languages. For example SWIG can provide an interface to a \testit{std::vector}
 in Python similar to its own list or tuple type along with implicit
 conversions. This feature greatly improves the interaction in the
 target language, giving the interface a native feel. Because of the
 goal to create a template-less layer free from compile-time
-parameters, SimpleITK uses std::vectors for array-like parameters for
+parameters, SimpleITK uses \textit{std::vectors} for array-like parameters for
 its interface. However, for the targeted scripting language it may
 appear as native arrays.
 
@@ -536,63 +536,63 @@ From an interface perspective, the handling of the life of an object,
 i.e. how the object is constructed, copy and destroyed, is a key
 aspect of developing an intuitive interface. Because we chose not to
 expose smart pointers, we use a completely different approach from
-ITK's New factory method. Our approach is simple and translates to other
-languages seamlessly. We simply directly expose the image class's
+ITK's \textit{New} factory method. Our approach is simple and translates to other
+languages seamlessly. We simply directly expose the \textit{Image} class's
 constructors and destructor without the restrictions applied in
-ITK. The reasons ITK uses the New factory method include: adding
+ITK. The reasons ITK uses the \textit{New} factory method include: adding
 flexibility to override a class' implementation and enforcing smart
 pointers use by preventing stack based allocation. Our approach to the
 SimpleITK interface does not allow our classes to be directly
 overridden but still allows ITK class overrides to occur
-internally. As we encourage the direct use of our image class, the
-smart pointer motivation is mute as well. An image is able to be
+internally. As we encourage the direct use of our \textit{Image} class, the
+smart pointer motivation is mute as well. An \textit{Image} is able to be
 default constructed, as an image of size zero. An image of any
 dimension or pixel type is considered to be empty if its size is
 zero. The common constructor methods take parameters for the size of
 the image along with the pixel type and support the option for the
 number of components per pixel. The dimension of the image is
-determined by the number of components used for size. How images are
+determined by the number of components used for size. How \textit{Image}s are
 copied is closely related to their constructors, but the relationship
 between the SimpleITK interface and ITK objects needs to be described
 first.
 
-The SimpleITK image interface presented, utilizes the facade design
+The SimpleITK \textit{Image} interface presented, utilizes the facade design
 pattern in conjunction with the private implementation, pimpl pattern
 \cite{Sutter1999}. It is a facade in that it provides a unified interface
 for multiple ITK classes and template parameters. The single SimpleITK
-image class provides an interface to ITK's Image, VectorImage, and
-LabelMap classes and supports  multiple dimensions and pixel
-types. However, the SimpleITK Image class is not polymorphic, i.e. it
+\textit{Image} class provides an interface to ITK's \textit{Image}, \textit{VectorImage}, and
+\textif{LabelMap} classes and supports  multiple dimensions and pixel
+types. However, the SimpleITK \textit{Image} class is not polymorphic, i.e. it
 is not a virtual base class and does not contain virtual
 methods. Instead it relies on an internal pointer to a private class
 in the pimpl pattern to provide a unified polymorphic interface to
-ITK's image class. The pimpl image has an abstract base class for the
+ITK's \textit{Image} class. The pimpl image has an abstract base class for the
 unified interface with templated derived classes to implement the
 specifics. This pimpl image fully encapsulate ITK's templates and
 instantiates all the ITK image classes. A call from the SimpleITK
 interface to an ITK image is quite efficient and direct despite the
 complexity of the patterns used. A call to the SimpleITK image's
-method, calls the same method in the Pimpl Image through the
+method, calls the same method in the pimpl \textit{Image} through the
 polymorphic interface, which then calls the ITK method. This dispatch
-method is direct and free from any conditionals. The SimpleITK image
+method is direct and free from any conditionals. The SimpleITK \textit{Image}
 only contains a pointer to the pimpl image which only contains a smart
-pointer to ITK image. This implementation provides an efficient
+pointer to ITK \textit{Image}. This implementation provides an efficient
 interface with low overhead.
 
 Our interface also allows for direct copying and assignment of the
-image class in an optimized manner. From a user perspective, the
+\textit{Image} class in an optimized manner. From a user perspective, the
 availability of optimized copy methods is generally all that needs to
 be known. However, we have optimized these methods by using a form of
 lazy evaluation through a copy-on-write (COW)  policy. This policy is
 a key component that allows for an efficient implementation while
 removing pointers from the interface. Ironically, COW is implemented
-by using ITK's smart pointers. When a copy of a SimpleITK image
+by using ITK's smart pointers. When a copy of a SimpleITK \textit{Image}
 occurs, a new ITK smart pointer to the image is created and
 stored. This new smart pointer increases the reference count contained
-of the ITK image. When there is a write request to the SimpleITK
-image, the reference count is checked; if it is not 1, then a deep
+of the ITK \textit{Image}. When there is a write request to the SimpleITK
+\textit{Image}, the reference count is checked; if it is not 1, then a deep
 copy is performed of the bulk image data. This approach enables the
-SimpleITK image to be passed by value without the overhead of
+SimpleITK \textit{Image} to be passed by value without the overhead of
 implicitly copying the bulk image data.
 
 Our user survey and ARB discussions were inconclusive in determining a
@@ -601,7 +601,7 @@ image or pixel types does not increase the number of methods in the
 SimpleITK interface, we do not limit the types enabled. Currently we
 have up to 26 different pixel types available including scalars,
 multi-component vectors, complex as well as label maps implemented
-with the run length encoded LabelMap classes. Fully implementing these
+with the run length encoded \textit{LabelMap} classes. Fully implementing these
 type does not have an adverse effect on usability or run-time. It does
 however increase the demands on the system requirements for compiling
 the library. As the goals for SimpleITK focus more on usability of the
@@ -610,7 +610,7 @@ tradeoff. Additionally, we settled for only supporting 2 and 3
 dimensional images. Interest by the users in higher dimensional images
 was limited.
 
-The Image interface was also customized for C++, Python, R, Java and C\# to
+The \textit{Image} interface was also customized for C++, Python, R, Java and C\# to
 provide additional syntactic enhancements to make language integration
 as easy as possible. These enhancements include features such as
 operator overloading, advance subscripting, and utilizing weak typing
@@ -631,7 +631,7 @@ SimpleITK included removing the dependency on the image type at
 compile-time, the removal of ITK's data driven pipeline as well as
 providing a flexible interface which has an object oriented and
 procedural interface. With the template-less image class designed and
-the decision to use STL's std::vector as parameters whose length is
+the decision to use STL's \textit{std::vector} as parameters whose length is
 dependent on the image dimension, the interface was rather straight
 forward. Determining which types to use for filter method parameters
 was a difficulty when it was the same type as the image's pixel
@@ -652,7 +652,7 @@ executed immediately, so the method name Execute was chosen to
 illustrate the difference. Filters which have secondary results, such
 as a number of iterations or a measurement of error are problematic
 for the procedural interface as functions naturally only return a
-single value. The solution was to add “measurements” only to the
+single value. The solution was to add ``measurements'' only to the
 filter classes. An alternative approach, to make these available
 through the procedural interface was  have them as arguments to the
 procedural methods. However doing so would result in too many
@@ -706,10 +706,10 @@ design. Among the ITK features SimpleITK omits are the advanced
 details of memory management occurring in the pipeline such as
 releasing data, and running filters “in place”. They are not relevant,
 since SimpleITK has an immediate execution model that lacks pipeline
-buffering. ITK's interface for the ProcessObject, which is the basis
+buffering. ITK's interface for the \textit{ProcessObject}, which is the basis
 for all filters, consists of over 40 public methods for manipulating
 the pipeline and managing the inputs and outputs. All these methods
-are irrelevant for SimpleITK's Execute method approach. Omitting them
+are irrelevant for SimpleITK's \textit{Execute} method approach. Omitting them
 simplifies the interface for each filter class.  Among the features
 still relevant is the monitoring of progress and events; these
 features are scheduled for the next release of SimpleITK, version 0.8.
@@ -739,8 +739,8 @@ languages (See figure \ref{fig:01}). The manually written common code of SimpleI
 the meta-programing infrastructure for the template-less layer and the
 core data structures such as the image and the transform
 classes. Also, a few of the filters and the reading, writing and image
-display interfaces are written by hand. As of SimpleITK 0.7rc1, the
-SimpleITK C++ interface for 245 image filters is automatically
+display interfaces are written by hand. As of SimpleITK 0.7.1, the
+SimpleITK C++ interfaces for 245 image filters are automatically
 generated from manually written descriptions.
 
 \subsubsection{Code Generation}
@@ -799,42 +799,42 @@ are template files for filters of types such as \textit{ImageSources},
 
 \subsubsection{Template Meta-program and Typelists}
 The crux of the problem for the template-less layer is the ability to
-map the runtime pixel type information, PixelIDValue, available from
-SimpleITK's image to the compile-time template parameters in ITK and
+map the runtime pixel type information, \textit{PixelIDValue}, available from
+SimpleITK's \textit{Image} to the compile-time template parameters in ITK and
 visa versa. Template meta-programming in C++ is the use of templates
 to perform compile-time execution to generate code. SimpleITK uses a
-concept called ``Typelists'' list to operate on list of types, PixelIDs,
+concept called ``Typelists'' to operate on list of types, \textit{PixelID}s,
 which represent the types of pixels. Specifically these lists have
 compile-time operations to append, merge, intersect, search, traverse
 and perform permutations of selections from two lists
-\cite{Alexandrescu2001}. The runtime ID of a pixel type, PixelIDValue, is
-the index in the global InstantiatedPixelIDTypeList type, which is a
-Typelist of all the available pixel types. There are a variety of
-groups of PixelIDs declared as Typelists such as integer, real and
+\cite{Alexandrescu2001}. The runtime ID of a pixel type, \textit{PixelIDValue}, is
+the index in the global \textit{InstantiatedPixelIDTypeList} type, which is a
+\textit{Typelist} of all the available pixel types. There are a variety of
+groups of \textit{PixelID}s declared as \textit{Typelist}s such as integer, real and
 vector. The JSON description of a filter describes the valid input
 pixel types by performing meta-programming operations on these
-Typelists.
+\textit{Typelist}s.
 
-The compile-time mapping of the run-time PixelIDValue to an
+The compile-time mapping of the run-time \textit{PixelIDValue} to an
 instantiated function with the image as a template parameter is more
-problematic. The compile-time mapping of the PixelID to the scalar
-PixelIDValue can and must be done on all instantiated types. On the
+problematic. The compile-time mapping of the \textit{PixelID} to the scalar
+\textit{PixelIDValue} can and must be done on all instantiated types. On the
 other hand the templated functions can only be instantiated with the
-parameters that are specified via Typelists. Otherwise the code may
+parameters that are specified via \textit{Typelist}s. Otherwise the code may
 not be valid.
 
-The mapping of the run-time PixelIDValue to an instantiated member
+The mapping of the run-time \textit{PixelIDValue} to an instantiated member
 function is done with an abstraction called a
-MemberFunctionFactory. This factory has a method which maps a
-PixelIDValue and image dimension to a member function pointer of an
+\textit{MemberFunctionFactory}. This factory has a method which maps a
+\textit{PixelIDValue} and image dimension to a member function pointer of an
 instantiated member function over the associated ITK image
-type(s). These functions are registered into the factory by passing a
-PixelID Typelist and the dimension. Additionally the factory has a
+types. These functions are registered into the factory by passing a
+\textit{PixelID} \textit{Typelist} and the dimension. Additionally the factory has a
 templated object which knows how to get the address of  the member
-function, enabling the compile-time traversal of the Typelist to
+function, enabling the compile-time traversal of the \textit{Typelist} to
 instantiate the member function.  With the member functions stored in
-the factory, they are indexable by the PixelIDValue at run-time. This
-MemberFunctionFactory is the heart of the dispatch system used to
+the factory, they are indexable by the \textit{PixelIDValue} at run-time. This
+\textit{MemberFunctionFactory} is the heart of the dispatch system used to
 implement SimpleITK's templateless layer and is an important software
 engineering innovation for dispatching run-time mappings to ITK types.
 
@@ -961,9 +961,9 @@ overloaded operators for comparison and arithmetic.
 The resulting segmentation consists of over 9000 segmented gold
 beads. Segmentation is just one of many steps in the process of
 quantitative analysis. SimpleITK provides facilities for basic
-statistics in the LabelImageStatisticsImageFilter. However, for this
+statistics in the \textit{LabelImageStatisticsImageFilter}. However, for this
 study custom shape analysis was implemented in C++
-within ITK's LabelMap framework, illustrating the complementary
+within ITK's \textit{LabelMap} framework, illustrating the complementary
 nature of SimpleITK's and ITK's interfaces. When implementing new
 algorithms ITK can be the best tool to use, while interactively
 exploring existing algorithms for a solution may be better suited to
