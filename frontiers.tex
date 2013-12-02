@@ -290,11 +290,11 @@ A second common difficulty is dealing with the ITK's advanced C++
 templates. ITK uses templates for both an image type's pixel type and
 the dimension, and the algorithms are templated over the image
 types. The naive usage of these features require the developer to
-determine static types used at compile type.  The code required to
+determine static types used at compile type.  The code needed to
 create a basic program is excessively long and verbose with basic
-programs requiring numerous C++ type definitions.  If multiple pixel
-types or image types need to be handled, then even more bulky and
-complicated code require.
+programs requiring numerous C++ type definitions.  Handling multiple pixel
+types or image types can result in even more bulky and complicated code
+with nested case statements for template function dispatching.
 
 A third problem is complications arising from the ITK pipeline. When
 filters in a pipeline get executed, the number of times they get
@@ -315,11 +315,11 @@ applications and requirements for image processing. There were 253
 total participants of which 45 participants had never used ITK and 54
 were uncomfortable using C++.
 
-The survey produced several important conclusions. First, a ready to
-use package greatly increases the likelihood of it being used. Second,
+The survey produced several important conclusions. First, a pre-compiled,
+installable package greatly increases the likelihood user uptake. Second,
 1 dimensional images are not important with only 4 participants saying
 it would likely to be used. Third, for each pixel type the group was
-asked to rate it's priority from ``Not important'' to ``Essential''. Every
+asked to rate its priority from ``Not important'' to ``Essential''. Every
 pixel type had a minimum of 25\% of the participants saying it was at least
 a ``High Priority''.
 
@@ -338,14 +338,14 @@ on prioritizing design philosophies.
 
 \subsection{Goals}
 For a successful project there are certain software engineering goals
-that must be achieved for maximum impact. Firstly, the software must to appeal
-to the greatest audience possible. This goal suggests that we must be
+that must be achieved for maximum impact. Firstly, the software should appeal
+to the greatest audience possible. This goal suggests that SimpleITK must be
 cross platform and support modern desktop operating systems such as
 Microsoft Windows, Apple OS X, and GNU Linux. As observed in our
 survey, a variety of languages should be supported and the framework
-should easily be extendable to other target languages. Additionally,
-to make it easiest for potential users to try the software there should
-be binary downloads available.
+should easily be extendible to other target languages. Also,
+to make it easiest for potential users to try the software, there should
+be binary, downloadable packages available.
 
 Reliability and quality of the software is also of high importance. If
 a potential user downloads the software, and the first thing they try
@@ -358,14 +358,14 @@ Given that we want to expand the ITK community beyond those who are
 comfortable with the current complexities of ITK, certain features
 should be hidden to enable clearer access to the core algorithms
 available in ITK. A common complaint about ITK is the
-difficulties with using the templates for image and filter algorithms. To address this an
-important objective is to present a template-less abstraction  or
-“typeless layer” to the native ITK interface which implicitly handles
+difficulties with using the templates for image and filter algorithms. To address this 
+complaint an important objective is to present a template-less abstraction  or
+“typeless layer” to the native ITK interface that implicitly handles
 the ITK templated types. We set the larger goal of not exposing any
 templates in the SimpleITK interface.
 
 Another challenge in our design is to provide a procedural interface
-to the algorithms, while still providing a object oriented for those
+to the algorithms, while still providing a object oriented interface for those
 that prefer it. Therefore the interface design needs to be flexible so
 that it can support multiple usage styles.
 
@@ -383,8 +383,8 @@ development, SimpleITK goals focus on providing usable algorithms. So
 the building block that ITK provides for algorithm development such an
 image iterator, adaptor, neighborhood algorithms and other utilities
 and interfaces are not designed to be included in the SimpleITK
-interface. This will not exclude SimpleITK from being a platform where
-new algorithms can be developed. For example new methods can be
+interface. This limitation should not exclude SimpleITK from being a platform for
+new algorithm development. For example new methods can be
 developed that are a composite of other algorithms.
 
 Lastly, while ITK is an biomedical segmentation and registration
@@ -438,7 +438,7 @@ a direct mapping of a methods from the target language to an
 associated method in the C++ interface.
 
 WrapITK uses SWIG to interface ITK with other languages.  But the
-complexity of the templated programming used in ITK, means that SWIG
+complexity of the templated programming used in ITK means that SWIG
 cannot directly wrap ITK.  Instead WrapITK requires additional tools
 to explicitly specify the interface of ITK in a format that SWIG can
 understand to wrap certain instantiations of the templated ITK
@@ -518,11 +518,11 @@ array-like types and STL objects.
 \subsubsection{Image Buffer Access}
 The ability to easily import and export images into SimpleITK is a
 critical feature. It enables the interfacing between multiple image
-processing libraries. We choose to allow the direct exposure of an
-image's buffer via a raw pointer at the C++ interface. This provides
-efficient direct access, however it does not provide any safety with
-it's usage. Therefore it is directly exposed in wrapped
-languages. Instead the goal is to expose a native array interface to
+processing libraries. We chose to allow the direct exposure of an
+image's buffer via a raw pointer at the C++ interface. This pointer provides
+efficient direct access, however it use is inherently unsafe.
+Therefore it is not directly exposed in wrapped
+languages. Instead our goal is to expose a native array interface to
 the buffer in the target language, such as numpy for Python.
 
 \subsection{The Design of the SimpleITK Image}
@@ -790,7 +790,7 @@ generator script because its small size makes it easily included as
 part of the SimpleITK source and compiled during the build
 process. The generator script is derived from the Lua ``Text Template
 Expand'' example (http://lua-users.org/wiki/TextTemplate) combined
-with an publically available JSON  parser. This system uses template
+with an publicly available JSON  parser. This system uses template
 files which contain and inlined Lua expressions all of which are
 evaluated into strings. The scope of the Lua expressions include
 variables from the current scope in the JSON description file. There
@@ -879,12 +879,12 @@ images into a single vector image.
 We developed this script interactively in an IPython Notebook
 \cite{Perez2007} session. We implemented custom display functions
 called \textit{showimg} and \textit{showimg3d}, which allow for the
-easy tiling of multiple slices. To display we export the tiled slices
+easy tiled display of multiple slices. For display we export the tiled slices
 to \textit{numpy} and utilize \textit{matplotlib} for inline display
-in the notebook.
+in the IPython notebook.
 
 First we read the T1 and T2 brain images and create unsigned char
-version for displays (See listing \ref{lst:03}: lines 5-10).
+version for display (See listing \ref{lst:03}: lines 5-10).
 Taking advantage of SimpleITK's Python array slicing, extracting
 axial slices from the MRI volumes is simple (See figure \ref{fig:02}
 and listing \ref{lst:03}: lines 13-14). Then from the original T1 and T2 volumes we
@@ -1053,15 +1053,15 @@ infrastructure for source code generation for filters has been
 implemented, much of the work for ITK's registration framework is yet
 to be done. Some ITK registration methods are ITK filters and can easily
 be integrated as part of the current framework. The modular
-registration framework in ITK version 3 and the lastest version, v4,
+registration framework in ITK version 3 and the latest version, v4,
 present new problems which require novel design solutions.
 
-Additionally, there are features in ITK that still need to be encorporated
+Additionally, there are features in ITK that still need to be incorporated
 in to the SimpleITK interface such as progress reporting and call-back
 methods. While SimpleITK currently contains over 250 image filters,
 we are always looking for feedback from our user community for
-what additional ITK filters should be priorites in future
-work. Many of the unencorporated ITK filters are not commonly used. So when the
+what additional ITK filters should be priorities in future
+work. Many of the unincorporated ITK filters are not commonly used. So when the
 SimpleITK interface is tested, bugs in ITK may arise or other
 inconsistencies may be discovered in ITK's interface. These issues must be
 addressed and fixed in ITK and slow the development of SimpleITK.
