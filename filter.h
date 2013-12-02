@@ -16,7 +16,7 @@ public:
   double GetMeasurement() const;
 
   Image Execute(const Image &image1);
-  Image Execute( onst Image &image1, double pixelValue, std::vector<unsigned int> dimValue);
+  Image Execute(const Image &image1, double pixelValue, std::vector<unsigned int> dimValue);
 
 };
 

@@ -153,7 +153,7 @@ Through the contributions of the ITK community and continued funding
 the scope of ITK has continued to grow. The version 4 refactoring
 separated ITK into a modular structure which now contains over 100
 modules. The segmentation algorithms available in ITK include region
-growing, level sets, markov random field classifiers, watersheds and
+growing, level sets, Markov random field classifiers, watersheds and
 other statistical classifiers. The registration framework is designed
 to be modular with the distinct parts for a transform, interpolator,
 transform, optimizer, and image similarity metric along with support
@@ -214,14 +214,14 @@ this system CMake \cite{Martin2003}, GCC\_XML (http://www.gccxml.org), pygccxml,
 produce an easily parsable description of the ITK source code, then
 uses manually written CMake ``wrap'' files along with Python's pygccxml
 module to create a SWIG interface file and describe how the ITK
-templates parameters should be declared. Next SWIG generates the C++
+templates parameters should be defined. Next SWIG generates the C++
 code which instantiates and wraps the ITK for the targeted language.
 
 The result is a powerful exposure of ITK interface, along with many of
 ITK's difficulties and problems. Each templated ITK class is
 instantiated, compiled and wrapped as separate objects. So in the
 target language the correct template parameters must be provided as
-part of the of the object to be constructed. While this approach is
+part of the class's name to be constructed. While this approach is
 very much in the style of ITK, many of the targeted languages are
 scripted and typeless, making this extra verbosity unnatural and
 cumbersome.  This approach also has a very large impact on the size of
@@ -236,7 +236,7 @@ the large number of configuration options, and the compile-time and
 configuration options, precompiled binaries are not available.
 
 \subsection{Other Wrapping}
-ManageITK was developed by Dan Mueller \cite{Mueller2007} to provide
+ManageITK was developed \cite{Mueller2007} to provide
 wrappers for ITK for the .NET languages such as C\#, VB.NET and
 IronPython. It was based on the WrapITK infrastructure, without the
 use of GCC\_XML or SWIG, instead relying on a manual description of
@@ -249,11 +249,11 @@ Studio on the Windows operating system, and properties and methods for
 a new ITK object need to be manually added and updated.  Also there is
 no testing generated for the wrapped interface.
 
-MathWorks' MATLAB is a popular commercial platform for research and
+MATLAB  (Mathworks, Natick, MA) is a popular commercial platform for research and
 prototyping bio-medical image processing and other numeric computation
 algorithms. There are several libraries available to access ITK
 algorithms inside MATLAB, although they are not providing a direct
-access to the ITK interface,these include MatITK\cite{Chu2006} and
+access to the ITK interface. These include MatITK\cite{Chu2006} and
 SimITK\cite{Dickinson2011}.
 
 \section{Design Goals}
@@ -273,7 +273,7 @@ interface accessible to non-computer scientists such as domain
 scientists, biomedical engineers and mathematicians.
 
 Interactive scripting and programming environments such as the
-Python's SciPy environment \cite{Jones2001}, MATLAB (Mathworks, Natick, MA)
+Python's SciPy environment \cite{Jones2001}, MATLAB
 and The R Project for Statistical Computing are popular choices for
 initial prototyping and experimentations. Scripting languages are
 easily accessible to more people than C++.
@@ -283,7 +283,7 @@ binary distribution or compiled software. They must download and
 compile ITK from the source code, which requires development tools
 such as a compilers and CMake which may be new to the user. This
 requirement is a large initial hurdle, and problems are frequently
-encountered as shown by the many help requests on the ITK support
+encountered as shown by the many help requests on the ITK community
 mailing list.
 
 A second common difficulty is dealing with the ITK's advanced C++
@@ -338,13 +338,13 @@ on prioritizing design philosophies.
 
 \subsection{Goals}
 For a successful project there are certain software engineering goals
-that must be achieved for maximum impact. Firstly, we want to appeal
+that must be achieved for maximum impact. Firstly, the software must to appeal
 to the greatest audience possible. This goal suggests that we must be
 cross platform and support modern desktop operating systems such as
 Microsoft Windows, Apple OS X, and GNU Linux. As observed in our
 survey, a variety of languages should be supported and the framework
 should easily be extendable to other target languages. Additionally,
-to make it easiest of potential users to try the software there should
+to make it easiest for potential users to try the software there should
 be binary downloads available.
 
 Reliability and quality of the software is also of high importance. If
@@ -357,8 +357,8 @@ quality and reliability of the software.
 Given that we want to expand the ITK community beyond those who are
 comfortable with the current complexities of ITK, certain features
 should be hidden to enable clearer access to the core algorithms
-available in ITK. To address the common complaint about ITK is the
-difficulties using the templates for image and filter algorithms, an
+available in ITK. A common complaint about ITK is the
+difficulties with using the templates for image and filter algorithms. To address this an
 important objective is to present a template-less abstraction  or
 “typeless layer” to the native ITK interface which implicitly handles
 the ITK templated types. We set the larger goal of not exposing any
@@ -449,7 +449,7 @@ wrappable by SWIG.
 ITK uses a variety of array-like types such as arrays, vectors,
 indexes, sizes, points and offsets. These types have template
 parameters such as dimension and value type which makes them dependent
-of the type of the image, resulting in dozens of array-like types in
+on the type of the image, resulting in dozens of array-like types in
 the native ITK interface. SWIG has built in support for many C++
 Standard Template Library (STL) objects such as std::vector and
 std::list and provides specialized interfaces for target
@@ -464,11 +464,11 @@ appear as native arrays.
 
 \subsubsection{Hide Smart Pointers}
 Pointers and explicit memory management are elements of C++ that
-preclude it from being considered a high-level language such as
+preclude it from being considered a high-level language compared to
 scripting languages like Python. The smart pointer design pattern is a
-combination of implicit reference counting for objects with an
+combination of implicit reference counting for objects along with an
 interface of a standard pointer so that objects can be automatically
-deleted when no longer referenced, reducing the burden of explicit
+deleted when no longer referenced. Thus reducing the burden of explicit
 memory management. While smart pointers are used in ITK, they are not
 simple enough for SimpleITK as they may introduce a new concept in
 target languages. Many languages provide a direct object type, not a
@@ -600,7 +600,7 @@ tradeoff. Additionally, we settled for only supporting 2 and 3
 dimensional images. Interest by the users in higher dimensional images
 was limited.
 
-The interface was also customized for C++, Python, R, Java and C\# to
+The Image interface was also customized for C++, Python, R, Java and C\# to
 provide additional syntactic enhancements to make language integration
 as easy as possible. These enhancements include features such as
 operator overloading, advance subscripting, and utilizing weak typing
@@ -623,8 +623,8 @@ providing a flexible interface which has an object oriented and
 procedural interface. With the template-less image class designed and
 the decision to use STL's std::vector as parameters whose length is
 dependent on the image dimension, the interface was rather straight
-forward. Determining which type to use for filter method parameters
-was a difficulty when its the same type as the image's pixel
+forward. Determining which types to use for filter method parameters
+was a difficulty when it was the same type as the image's pixel
 type. Generically using the double type resolved this issue. The
 double is a superset of all scalar pixel types except 64-bit integers,
 and for vector pixel types the scalar value is replicated for all
@@ -756,7 +756,7 @@ be inserted into the template. The \textit{output\_pixel\_type} is
 frequently more that just a static value by containing meta-programing
 to transform the input type to the output. Additionally, there is the
 \textit{member} sections which contains the description for each filter
-parameter so that it can be store in the SimpleITK facade and
+parameter so that it can be stored in the SimpleITK facade and
 translated into the typed ITK filter. There is also an optional
 section to describe \textit{measurements}, and how to update the member
 variable from the results of the ITK filter.
@@ -778,8 +778,8 @@ powerful, portable, fast, and lightweight scripting languages
 \cite{Ierusalimschy2006}. We chose it as the language for the source code
 generator script because its small size makes it easily included as
 part of the SimpleITK source and compiled during the build
-process. The generator script is derived with the Lua ``Text Template
-Expand'' example (http://lua-users.org/wiki/TextTemplate), combined
+process. The generator script is derived from the Lua ``Text Template
+Expand'' example (http://lua-users.org/wiki/TextTemplate) combined
 with an publically available JSON  parser. This system uses template
 files which contain and inlined Lua expressions all of which are
 evaluated into strings. The scope of the Lua expressions include
@@ -797,7 +797,7 @@ concept called ``Typelists'' list to operate on list of types, PixelIDs,
 which represent the types of pixels. Specifically these lists have
 compile-time operations to append, merge, intersect, search, traverse
 and perform permutations of selections from two lists
-\cite{Alexandrescu2001}. The runtime id of a pixel type, PixelIDValue, is
+\cite{Alexandrescu2001}. The runtime ID of a pixel type, PixelIDValue, is
 the index in the global InstantiatedPixelIDTypeList type, which is a
 Typelist of all the available pixel types. There are a variety of
 groups of PixelIDs declared as Typelists such as integer, real and
@@ -838,7 +838,7 @@ annotated source code (http://www.doxygen.org). It is used as the source code an
 throughout ITK and SimpleITK. For all the manually written SimpleITK
 infrastructure and facade interfaces the annotations are written in
 the source code. Automated utilities have been developed to insert
-documentation strings into the JSON filter description files. These
+documentation strings from ITK into the JSON filter description files. These
 documentation fields are then incorporated into the generated source
 code as well as used for wrapped target language's online
 documentation. Currently the ITK documentation sometimes contains C++
@@ -912,7 +912,7 @@ The dataset chosen is a volume of 100nm gold beads used to analyze the
 procedures and methods for data acquisition. It was collected by the
 Biophysics Section and Electron Microscopy Core, Laboratory of Cell
 Biology at the National Cancer Institute and is publicly available on
-a MIDAS data server at the National Library of Medicine
+a MIDAS data server at the NLM
 (http://placid.nlm.nih.gov). The dataset was acquired at 5nm square
 voxels with a volume size of 1003x1003x296 pixels resulting in a 284
 megabyte volume.
@@ -932,15 +932,15 @@ and parameter exploration.
     watersheds algorithm.}]{GoldBeadsSegmentation.py}
 
 The method first uses thresholding to identify the high intensity gold,
-then uses mathematical morphology separate the beads of at least 13 pixels
+then uses mathematical morphology to separate the beads of at least 13 pixels
 (65nm) in diameter. Next, each isolated part is given a unique
 identifier using the connected components algorithm. The watershed from
 markers algorithm available in ITK \cite{Beare2006}, is
-a multi-label greedy region growing subject to the penalty of the
+a multi-label greedy region growing algorithm subject to the penalty of the
 feature image. The individuated gold components are combined with an
 additional marker for the background. This marker image is used in
 conjunction with an edge image for the watershed algorithm. The
-SimpleITK code is easy to follow and brief and executes 16 ITK filter
+SimpleITK code is easy to follow, brief and executes 16 ITK filter
 to perform its task. Many of those filters are invoked through
 overloaded operators for comparison and arithmetic.
 
@@ -1035,7 +1035,7 @@ contains more information about how to get started using SimpleITK.
 \subsection{Future Work}
 While the foundations of ITK have been integrated into the SimpleITK
 interface for classes such as images, transforms and interpolators and the
-infrastructure for source code generation for filter has been
+infrastructure for source code generation for filters has been
 implemented, much of the work for ITK's registration framework is yet
 to be done. Some ITK registration methods are ITK filters and can easily
 be integrated as part of the current framework. The modular
@@ -1052,7 +1052,7 @@ SimpleITK interface is tested, bugs in ITK may arise or other
 inconsistencies may be discovered in ITK's interface. These issues must be
 addressed and fixed in ITK and slow the development of SimpleITK.
 
-ITK is a very large toolkits consisting of millions of lines of
+ITK is a very large toolkit consisting of millions of lines of
 code. The SimpleITK interface is highly customized and not designed to
 expose all of ITK. The design goals of SimpleITK have been
 for a robust, reliable, and elegant interface to ITK. To that end we

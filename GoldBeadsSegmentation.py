@@ -7,7 +7,7 @@ median_img = sitk.Median(img, [1,1,1])
 sitk.Show(median_img, "In-Median1")
 
 m =  median_img > 160
-# Grayscale is more efficient for this case, and produce the same results
+# Grayscale is more efficient for this case, and produces the same results
 m = sitk.GrayscaleErode(m, 6)
 m = sitk.GrayscaleDilate(m, 2)
 
