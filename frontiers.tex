@@ -107,7 +107,7 @@ verification of reproducibility of published reports
 independent observers for it to be trustable \cite{Popper1968}. In
 the context of computational science, the reports of scientific
 research must include the means and the complete details required to
-enable independent groups to fully replicate the published results. 
+enable independent groups to fully replicate the published results.
 In particular, they should include: data, reports,
 list of experimental parameters, and software.
 
@@ -515,6 +515,16 @@ used to make the objects of the facade behave natively instead of
 requiring smart pointers and converting between the templated ITK
 array-like types and STL objects.
 
+\subsubsection{Image Buffer Access}
+The ability to easily import and export images into SimpleITK is a
+critical feature. It enables the interfacing between multiple image
+processing libraries. We choose to allow the direct exposure of an
+image's buffer via a raw pointer at the C++ interface. This provides
+efficient direct access, however it does not provide any safety with
+it's usage. Therefore it is directly exposed in wrapped
+languages. Instead the goal is to expose a native array interface to
+the buffer in the target language, such as numpy for Python.
+
 \subsection{The Design of the SimpleITK Image}
 The image class is at the heart of SimpleITK. It is the most commonly
 used class and has been specially designed to provide a natural and
@@ -851,7 +861,7 @@ integration with SimpleITK and other external projects.
 
 \section{Examples}
 
-\subsection{Multi-modal Vectricle Segmentation}
+\subsection{Multi-modal Ventricle Segmentation}
 Segmentation of the human brain lateral ventricles is a common task in the
 study of brain anatomy and its diseases.  Changes in the volume of
 cerebrospinal fluid and the shape of the cerebral ventricles are
@@ -866,11 +876,15 @@ grows a region based on the similarity of the local vector image
 statistics. To create a vector image we combine the MRI T1 and T2
 images into a single vector image.
 
-Our MRI segmentation Python script begins with importing SimpleITK and
-our image display routines \textit{showimg} and \textit{showimg3d} (available for
-download).  Next we read the T1 and T2 brain images and create unsigned char
-version for displays (See listing \ref{lst:03}: lines 5-10).
+We developed this script interactively in an IPython Notebook
+\cite{Perez2007} session. We implemented custom display functions
+called \textit{showimg} and \textit{showimg3d}, which allow for the
+easy tiling of multiple slices. To display we export the tiled slices
+to \textit{numpy} and utilize \textit{matplotlib} for inline display
+in the notebook.
 
+First we read the T1 and T2 brain images and create unsigned char
+version for displays (See listing \ref{lst:03}: lines 5-10).
 Taking advantage of SimpleITK's Python array slicing, extracting
 axial slices from the MRI volumes is simple (See figure \ref{fig:02}
 and listing \ref{lst:03}: lines 13-14). Then from the original T1 and T2 volumes we
