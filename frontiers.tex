@@ -535,8 +535,8 @@ numerous example code blocks and discussing tradeoffs with the ARB.
 From an interface perspective, the handling of the life of an object,
 i.e. how the object is constructed, copy and destroyed, is a key
 aspect of developing an intuitive interface. Because we chose not to
-expose smart pointers, we are use a completely different approach from
-ITK's New method. Our approach is simple and translates to other
+expose smart pointers, we use a completely different approach from
+ITK's New factory method. Our approach is simple and translates to other
 languages seamlessly. We simply directly expose the image class's
 constructors and destructor without the restrictions applied in
 ITK. The reasons ITK uses the New factory method include: adding
@@ -559,7 +559,7 @@ first.
 The SimpleITK image interface presented, utilizes the facade design
 pattern in conjunction with the private implementation, pimpl pattern
 \cite{Sutter1999}. It is a facade in that it provides a unified interface
-for multiple ITK class and template parameters. The single SimpleITK
+for multiple ITK classes and template parameters. The single SimpleITK
 image class provides an interface to ITK's Image, VectorImage, and
 LabelMap classes and supports  multiple dimensions and pixel
 types. However, the SimpleITK Image class is not polymorphic, i.e. it
@@ -587,7 +587,7 @@ lazy evaluation through a copy-on-write (COW)  policy. This policy is
 a key component that allows for an efficient implementation while
 removing pointers from the interface. Ironically, COW is implemented
 by using ITK's smart pointers. When a copy of a SimpleITK image
-occurs, a new ITK smart pointer to the image is create and
+occurs, a new ITK smart pointer to the image is created and
 stored. This new smart pointer increases the reference count contained
 of the ITK image. When there is a write request to the SimpleITK
 image, the reference count is checked; if it is not 1, then a deep
