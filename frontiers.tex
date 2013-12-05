@@ -174,7 +174,10 @@ platform to allow for research, experimentation and development of
 algorithms. To that end one of the notable implementation details in
 ITK is the extensive use of C++ templates. The ITK image class is a
 templated structure over both the pixel type as well as the image
-dimension. This design choice pervades all areas of the toolkit. Image filters
+dimension. The pixel type is the data type used for represent a
+pixel. It can be an intrisic integer or a real number as well as an
+array-like class to represent vector or color pixels. This design
+choice pervades all areas of the toolkit. Image filters
 must be templated over the image type. Also the data structures and objects
 used with the image classes are templated. These structures
 include image iterators, points, and indices. The results of this
@@ -520,7 +523,7 @@ The ability to easily import and export images into SimpleITK is a
 critical feature. It enables the interfacing between multiple image
 processing libraries. We chose to allow the direct exposure of an
 image's buffer via a raw pointer at the C++ interface. This pointer provides
-efficient direct access, however it use is inherently unsafe.
+efficient direct access, however its use is inherently unsafe.
 Therefore it is not directly exposed in wrapped
 languages. Instead our goal is to expose a native array interface to
 the buffer in the target language, such as numpy for Python.
@@ -557,25 +560,25 @@ between the SimpleITK interface and ITK objects needs to be described
 first.
 
 The SimpleITK \textit{Image} interface presented, utilizes the facade design
-pattern in conjunction with the private implementation, pimpl pattern
+pattern in conjunction with the private implementation, ``pimpl'' pattern
 \cite{Sutter1999}. It is a facade in that it provides a unified interface
 for multiple ITK classes and template parameters. The single SimpleITK
 \textit{Image} class provides an interface to ITK's \textit{Image}, \textit{VectorImage}, and
-\textif{LabelMap} classes and supports  multiple dimensions and pixel
+\textit{LabelMap} classes and supports  multiple dimensions and pixel
 types. However, the SimpleITK \textit{Image} class is not polymorphic, i.e. it
 is not a virtual base class and does not contain virtual
 methods. Instead it relies on an internal pointer to a private class
-in the pimpl pattern to provide a unified polymorphic interface to
-ITK's \textit{Image} class. The pimpl image has an abstract base class for the
+in the ``pimpl'' pattern to provide a unified polymorphic interface to
+ITK's \textit{Image} class. The ``pimpl'' image has an abstract base class for the
 unified interface with templated derived classes to implement the
-specifics. This pimpl image fully encapsulate ITK's templates and
+specifics. This ``pimpl'' image fully encapsulate ITK's templates and
 instantiates all the ITK image classes. A call from the SimpleITK
 interface to an ITK image is quite efficient and direct despite the
 complexity of the patterns used. A call to the SimpleITK image's
-method, calls the same method in the pimpl \textit{Image} through the
+method, calls the same method in the ``pimpl'' \textit{Image} through the
 polymorphic interface, which then calls the ITK method. This dispatch
 method is direct and free from any conditionals. The SimpleITK \textit{Image}
-only contains a pointer to the pimpl image which only contains a smart
+only contains a pointer to the ``pimpl'' image which only contains a smart
 pointer to ITK \textit{Image}. This implementation provides an efficient
 interface with low overhead.
 
